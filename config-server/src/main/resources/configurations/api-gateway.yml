@@ -1,0 +1,13 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: prueba
+          uri: http:prueba-service:8080
+          predicates: 
+            - Path=/api/v1/prueba/**

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      enabled: true
+      server:
+        native:
+          search-locations:
+          - classpath:/configurations
