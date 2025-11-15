@@ -67,30 +67,14 @@ ECO-RIDE LATAM es una plataforma de carpooling corporativo diseñada para coordi
 - `ReservationCancelled { reservationId, reason }`
 - `TripCompleted { tripId }`
 
-**Tipo de Saga**: Coreografía basada en eventos (Kafka/RabbitMQ). Alternativa: orquestación ligera desde `payment-service`.
-
-### Diagrama (Mermaid) — Happy path
-
 ## 5. Quickstart local
 
-**1. Clonar repositorio**
-
+Como ejecutar:
 ```bash
 git clone https://github.com/carlosrs14/eco-ride.git
+
 cd eco-ride
-```
 
-**2. Variables / Import Keycloak**
-
-- Importar `keycloak-realm-ecoride.json` en Keycloak.
-- Clients: `eco-gateway` (public, SPA), `eco-internal` (confidential).
-- Roles: `ROLE_DRIVER`, `ROLE_PASSENGER`, `ROLE_ADMIN`.
-- Scopes sugeridos: `trips:read`, `trips:write`, `payments:charge`, `notifications:send`.
-
-**3. Levantar Eco-sistema de microservicios**
-
-```bash
-# desde la raíz del repo
 docker compose up
 ```
 - Los microservicios se levantan con este comando.
@@ -101,4 +85,3 @@ docker compose up
 1. Crear una rama `feat/<descripción>`.
 2. Incluir migraciones DB nuevas en `db/migrations` del servicio correspondiente.
 3. Abrir PR hacia `dev` con descripción clara y pruebas.
-4. No abrir PR si no ha hecho los tests.

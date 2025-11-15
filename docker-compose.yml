@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    container_name: config-server
+    ports:
+      - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
+  
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - $"{API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    depends_on:
+      - config-server
+
+
