@@ -6,6 +6,8 @@ services:
     container_name: config-server
     ports:
       - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
+    environment:
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
   
   api-gateway:
     build:
@@ -24,8 +26,17 @@ services:
     container_name: car-service
     ports:
     - "${CAR_SERVICE_PORT}:${CAR_SERVICE_PORT}"
+    environment:
+      URL_DB: r2dbc:postgresql://${CARS_DB_NAME}:${CARS_DB_PORT}/${CARS_DB_NAME}
+      FLYWAY_URL: jdbc:postgresql://${CARS_DB_NAME}:${CARS_DB_PORT}/${CARS_DB_NAME}
+      USER_DB: ${CARS_DB_USER}
+      PASS_DB: ${CARS_DB_PASS}
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+    env_file:
+      - .env
     depends_on:
       - config-server
+      - cars-db
 
   rabbit-mq:
     container_name: ${RABBIT_MQ_HOST}

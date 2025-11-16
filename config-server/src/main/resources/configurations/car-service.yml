@@ -1,3 +1,22 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: car-service
+
+  r2dbc:
+    url: ${URL_DB}
+    username: ${USER_DB}
+    password: ${PASS_DB}
+
+  main:
+    web-application-type: reactive
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: ${FLYWAY_URL}
+    user: ${CARS_DB_USER}
+    password: ${CARS_DB_PASS}
+    locations: classpath:db/migration
