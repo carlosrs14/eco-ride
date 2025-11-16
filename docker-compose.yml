@@ -28,13 +28,13 @@ services:
       - config-server
 
   rabbit-mq:
-    container_name: rabbit-mq
+    container_name: ${RABBIT_MQ_HOST}
     image: rabbitmq:3-management
     ports:
       - "${RABBIT_MQ_PORT}:${RABBIT_MQ_PORT}"
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_USER: ${RABBIT_MQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_MQ_PASS}
 
   cars-db:
     container_name: ${CARS_DB_NAME}
@@ -48,6 +48,6 @@ services:
     volumes:
       - cars-data:/var/lib/postgresql/data
 
-  volumes:
-    cars-data:
+volumes:
+  cars-data:
 
