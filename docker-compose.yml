@@ -60,6 +60,39 @@ services:
     volumes:
       - cars-data:/var/lib/postgresql/data
 
-volumes:
-  cars-data:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    restart: always
+    command:
+      - start-dev
+      - --import-realm
+    environment:
+      KC_HTTP_PORT: ${KC_PORT}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:${KC_DB_PORT}/${KC_DB_NAME}
+      KC_DB_USERNAME: ${KC_DB_USER}
+      KC_DB_PASSWORD: ${KC_DB_PASS}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+    volumes:
+      - ./realm-ecoride.json:/opt/keycloak/data/import/realm-ecoride.json
+    ports:
+      - "${KC_PORT}:8180"
+    depends_on:
+      - keycloak-db
 
+  keycloak-db:
+    image: postgres:15
+    container_name: keycloak-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${KC_DB_NAME}
+      POSTGRES_USER: ${KC_DB_USER}
+      POSTGRES_PASSWORD: ${KC_DB_PASS}
+    volumes:
+      - keycloak_data:/var/lib/postgresql/data
+
+volumes:
+  keycloak_data:
+  cars-data:
