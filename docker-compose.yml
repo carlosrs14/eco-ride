@@ -16,5 +16,38 @@ services:
       - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
     depends_on:
       - config-server
+  
+  car-service:
+    build:
+      context: ./car-service
+      dockerfile: Dockerfile
+    container_name: car-service
+    ports:
+    - "${CAR_SERVICE_PORT}:${CAR_SERVICE_PORT}"
+    depends_on:
+      - config-server
 
+  rabbit-mq:
+    container_name: rabbit-mq
+    image: rabbitmq:3-management
+    ports:
+      - "${RABBIT_MQ_PORT}:${RABBIT_MQ_PORT}"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+
+  cars-db:
+    container_name: ${CARS_DB_NAME}
+    image: ${CARS_DB_IMAGE}
+    ports:
+      - "${CARS_DB_PORT}:${CARS_DB_PORT}"
+    environment:
+      POSTGRES_USER: ${CARS_DB_USER}
+      POSTGRES_PASSWORD: ${CARS_DB_PASS}
+      POSTGRES_DB: ${CARS_DB_NAME}
+    volumes:
+      - cars-data:/var/lib/postgresql/data
+
+  volumes:
+    cars-data:
 
