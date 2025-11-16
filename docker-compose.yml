@@ -6,6 +6,8 @@ services:
     container_name: config-server
     ports:
       - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
+    environment:
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
   
   api-gateway:
     build:
@@ -16,5 +18,48 @@ services:
       - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
     depends_on:
       - config-server
+  
+  car-service:
+    build:
+      context: ./car-service
+      dockerfile: Dockerfile
+    container_name: car-service
+    ports:
+    - "${CAR_SERVICE_PORT}:${CAR_SERVICE_PORT}"
+    environment:
+      SERVER_PORT: ${CAR_SERVICE_PORT}
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+      SPRING_R2DBC_URL: r2dbc:postgresql://cars-db:${CARS_DB_PORT}/${CARS_DB_NAME}
+      SPRING_R2DBC_USERNAME: ${CARS_DB_USER}
+      SPRING_R2DBC_PASSWORD: ${CARS_DB_PASS}
+      SPRING_FLYWAY_URL: jdbc:postgresql://cars-db:${CARS_DB_PORT}/${CARS_DB_NAME}
+      SPRING_FLYWAY_USER: ${CARS_DB_USER}
+      SPRING_FLYWAY_PASSWORD: ${CARS_DB_PASS}
+    depends_on:
+      - config-server
+      - cars-db
 
+  rabbit-mq:
+    container_name: ${RABBIT_MQ_HOST}
+    image: rabbitmq:3-management
+    ports:
+      - "${RABBIT_MQ_PORT}:${RABBIT_MQ_PORT}"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_MQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_MQ_PASS}
+
+  cars-db:
+    container_name: ${CARS_DB_NAME}
+    image: ${CARS_DB_IMAGE}
+    ports:
+      - "${CARS_DB_PORT}:${CARS_DB_PORT}"
+    environment:
+      POSTGRES_USER: ${CARS_DB_USER}
+      POSTGRES_PASSWORD: ${CARS_DB_PASS}
+      POSTGRES_DB: ${CARS_DB_NAME}
+    volumes:
+      - cars-data:/var/lib/postgresql/data
+
+volumes:
+  cars-data:
 

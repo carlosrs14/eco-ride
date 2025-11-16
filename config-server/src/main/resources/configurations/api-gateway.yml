@@ -7,7 +7,7 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: prueba
-          uri: http:prueba-service:8080
+        - id: car
+          uri: http:car-service:${CAR_SERVICE_PORT}
           predicates: 
-            - Path=/api/v1/prueba/**
+            - Path=/api/v1/cars/**
