@@ -60,6 +60,39 @@ services:
     volumes:
       - cars-data:/var/lib/postgresql/data
 
+  postgres-keycloak:
+    image: postgres:15
+    container_name: keycloak-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5435"
+  keyclok:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    restart: always
+    command:
+      - start-dev
+      - --proxy=edge
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5435/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"
+    depends_on:
+      - postgres-keycloak
 volumes:
+  postgres_data:
   cars-data:
-
