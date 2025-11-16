@@ -35,8 +35,6 @@ services:
       SPRING_FLYWAY_URL: jdbc:postgresql://cars-db:${CARS_DB_PORT}/${CARS_DB_NAME}
       SPRING_FLYWAY_USER: ${CARS_DB_USER}
       SPRING_FLYWAY_PASSWORD: ${CARS_DB_PASS}
-    env_file:
-      - .env
     depends_on:
       - config-server
       - cars-db
