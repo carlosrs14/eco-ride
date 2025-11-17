@@ -63,7 +63,6 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
-    restart: always
     command:
       - start-dev
       - --import-realm
@@ -85,7 +84,6 @@ services:
   keycloak-db:
     image: postgres:15
     container_name: keycloak-db
-    restart: always
     environment:
       POSTGRES_DB: ${KC_DB_NAME}
       POSTGRES_USER: ${KC_DB_USER}

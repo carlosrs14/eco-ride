@@ -1,0 +1,11 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE IF NOT EXISTS  cars (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    plate VARCHAR(100) NOT NULL,
+    brand VARCHAR(100) NOT NULL,
+    model VARCHAR(100) NOT NULL,
+    color VARCHAR(100),
+    sits INT NOT NULL,
+    driver_id VARCHAR(100) NOT NULL
+);
