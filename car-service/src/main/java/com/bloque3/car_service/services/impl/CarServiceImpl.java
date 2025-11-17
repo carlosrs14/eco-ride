@@ -1,6 +1,7 @@
 package com.bloque3.car_service.services.impl;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,8 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Mono<CarResponse> findById(@NonNull String id) {
-        return carRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        return carRepository.findActiveById(uuid)
             .switchIfEmpty(
                 Mono.error(new ResourceNotFoundException("car", "id", id))
             )
@@ -47,13 +49,14 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Mono<CarResponse> update(@NonNull String id, CarRequest carRequest) {
-        return carRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        return carRepository.findActiveById(uuid)
             .switchIfEmpty(
                 Mono.error(new ResourceNotFoundException("car", "id", id))
             )
             .flatMap(existingCar -> {
                 Car car = carMapper.toEntity(carRequest);
-                car.setId(id);
+                car.setId(uuid);
                 car.setUpdatedAt(Instant.now());
                 return carRepository.save(car);
             })
@@ -62,12 +65,14 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Flux<CarResponse> findByDriverId(String driverId) {
-        return carRepository.findByDriverId(driverId).map(carMapper::toDto);
+        UUID uuid = UUID.fromString(driverId);
+        return carRepository.findByActivesByDriverId(uuid).map(carMapper::toDto);
     }
 
     @Override
     public Mono<Void> delete(@NonNull String id) {
-        return carRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        return carRepository.findActiveById(uuid)
             .switchIfEmpty(
                 Mono.error(new ResourceNotFoundException("car", "id", id))
             )

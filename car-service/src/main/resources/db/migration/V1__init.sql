@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS  cars (
     model VARCHAR(50) NOT NULL,
     color VARCHAR(10),
     seats INT NOT NULL,
-    driver_id VARCHAR(50) NOT NULL,
+    driver_id UUID NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()

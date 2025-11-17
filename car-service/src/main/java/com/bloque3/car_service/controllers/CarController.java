@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,28 +29,28 @@ public class CarController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<CarResponse>> create(@Valid @RequestBody CarRequest carRequest) {
-        return carService.create(carRequest).map(ResponseEntity::ok);
+    public Mono<CarResponse> create(@Valid @RequestBody CarRequest carRequest) {
+        return carService.create(carRequest);
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<CarResponse>> findById(@PathVariable String id) {
-        return carService.findById(id).map(ResponseEntity::ok);
+    public Mono<CarResponse> findById(@PathVariable String id) {
+        return carService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<CarResponse>> update(@PathVariable String id, @Valid @RequestBody CarRequest carRequest) {
-        return carService.update(id, carRequest).map(ResponseEntity::ok);
+    public Mono<CarResponse> update(@PathVariable String id, @Valid @RequestBody CarRequest carRequest) {
+        return carService.update(id, carRequest);
     }
 
     @GetMapping("/driver/{driverId}")
-    public Flux<ResponseEntity<CarResponse>> findByDriverId(@PathVariable String driverId) {
-        return carService.findByDriverId(driverId).map(ResponseEntity::ok);
+    public Flux<CarResponse> findByDriverId(@PathVariable String driverId) {
+        return carService.findByDriverId(driverId);
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
-        return carService.delete(id).thenReturn(ResponseEntity.noContent().build());
+    public Mono<Void> delete(@PathVariable String id) {
+        return carService.delete(id);
     }
     
 }
