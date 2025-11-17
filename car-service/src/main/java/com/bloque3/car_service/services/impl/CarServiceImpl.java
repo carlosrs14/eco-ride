@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.bloque3.car_service.controllers.dto.request.CarRequest;
 import com.bloque3.car_service.controllers.dto.response.CarResponse;
+import com.bloque3.car_service.exception.ResourceNotFoundException;
 import com.bloque3.car_service.mappers.CarMapper;
 import com.bloque3.car_service.models.Car;
 import com.bloque3.car_service.repositories.CarRepository;
@@ -37,15 +38,26 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Mono<CarResponse> findById(@NonNull String id) {
-        return carRepository.findById(id).map(carMapper::toDto);
+        return carRepository.findById(id)
+            .switchIfEmpty(
+                Mono.error(new ResourceNotFoundException("car", "id", id))
+            )
+            .map(carMapper::toDto);
     }
 
     @Override
-    public Mono<CarResponse> update(String id, CarRequest carRequest) {
-        Car car = carMapper.toEntity(carRequest);
-        car.setId(id);
-        car.setUpdatedAt(Instant.now());
-        return carRepository.save(car).map(carMapper::toDto);
+    public Mono<CarResponse> update(@NonNull String id, CarRequest carRequest) {
+        return carRepository.findById(id)
+            .switchIfEmpty(
+                Mono.error(new ResourceNotFoundException("car", "id", id))
+            )
+            .flatMap(existingCar -> {
+                Car car = carMapper.toEntity(carRequest);
+                car.setId(id);
+                car.setUpdatedAt(Instant.now());
+                return carRepository.save(car);
+            })
+            .map(carMapper::toDto);
     }
 
     @Override
@@ -54,15 +66,18 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Mono<Void> delete(String id) {
-        Car car = Car.builder()
-            .id(id)
-            .updatedAt(Instant.now())
-            .isActive(false)
-            .build();
-
-        if (car == null) throw new RuntimeException("Car not found");
-        return carRepository.save(car).then();
+    public Mono<Void> delete(@NonNull String id) {
+        return carRepository.findById(id)
+            .switchIfEmpty(
+                Mono.error(new ResourceNotFoundException("car", "id", id))
+            )
+            .flatMap(car -> {
+                car.setIsActive(false);
+                car.setUpdatedAt(Instant.now());
+                return carRepository.save(car);
+            })
+            .then();
+       
     }
     
 }
