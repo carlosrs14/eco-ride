@@ -2,7 +2,9 @@ package com.bloque3.car_service.models;
 
 import java.time.Instant;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -19,14 +21,19 @@ public class Car {
     private String brand;
     private String model;
     private String color;
-    private Integer sits;
+    private Integer seats;
     
+    @CreatedDate
     @Column("created_at")
     private Instant createdAt;
 
+    @LastModifiedDate
     @Column("updated_at")
     private Instant updatedAt;
     
     @Column("driver_id")
     private String driverId;
+
+    @Column("is_active")
+    private Boolean isActive;
 }

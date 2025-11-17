@@ -6,6 +6,6 @@ public record CarResponse(
     String brand,
     String model,
     String color,
-    Integer sits,
+    Integer seats,
     String driverId
 ) {}
