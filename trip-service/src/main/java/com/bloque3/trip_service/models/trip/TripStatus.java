@@ -1,6 +1,5 @@
-package com.bloque3.trip_service.models;
+package com.bloque3.trip_service.models.trip;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -15,25 +14,11 @@ import lombok.Data;
 
 @Data
 @Builder
-@Table("trips")
-public class Trip {
+@Table("trip_status")
+public class TripStatus {
     @Id
     private UUID id;
-
-    @Column("seats_available")
-    private Integer seatsAvailable;
-    
-    @Column("start_time")
-    private Instant startTime;
-    
-    @Column("price_per_seat")
-    private BigDecimal pricePerSeat;
-    
-    @Column("origin_id")
-    private UUID originId; 
-    
-    @Column("destination_id")
-    private UUID destinationId;
+    private String status;
 
     @CreatedDate
     @Column("created_at")
@@ -45,10 +30,5 @@ public class Trip {
 
     @Column("is_active")
     private Boolean isActive;
-
-    @Column("driver_id")
-    private UUID driverId;
-
-    @Column("car_id")
-    private UUID carId;
+    
 }

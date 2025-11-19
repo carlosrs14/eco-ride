@@ -1,4 +1,4 @@
-package com.bloque3.trip_service.models;
+package com.bloque3.trip_service.models.trip;
 
 import java.time.Instant;
 import java.util.UUID;

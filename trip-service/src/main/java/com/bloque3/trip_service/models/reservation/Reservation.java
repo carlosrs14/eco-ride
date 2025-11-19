@@ -1,4 +1,4 @@
-package com.bloque3.trip_service.models;
+package com.bloque3.trip_service.models.reservation;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -14,18 +14,19 @@ import lombok.Data;
 
 @Data
 @Builder
-@Table("trip_histories")
-public class TripHistory {
+@Table("reservations")
+public class Reservation {
     @Id
     private UUID id;
 
     @Column("trip_id")
     private UUID tripId;
 
-    private Integer order;
+    @Column("passenger_id")
+    private UUID passengerId;
     
-    @Column("trip_state_id")
-    private UUID tripStateId;
+    @Column("seats_reserved")
+    private Integer seatsReserved;
 
     @CreatedDate
     @Column("created_at")
@@ -34,11 +35,7 @@ public class TripHistory {
     @LastModifiedDate
     @Column("updated_at")
     private Instant updatedAt;
-    
-    @Column("driver_id")
-    private UUID driverId;
 
     @Column("is_active")
     private Boolean isActive;
-    
 }
