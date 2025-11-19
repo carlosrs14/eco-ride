@@ -43,6 +43,7 @@ services:
     container_name: ${RABBIT_MQ_HOST}
     image: rabbitmq:3-management
     ports:
+      - "${RABBIT_MQ_PORT_AMQP}:${RABBIT_MQ_PORT_AMQP}"
       - "${RABBIT_MQ_PORT}:${RABBIT_MQ_PORT}"
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBIT_MQ_USER}
@@ -63,7 +64,9 @@ services:
   loki:
     image: grafana/loki:latest
     container_name: loki
+    user: "0:0"
     volumes:
+      - ./observability/loki-data:/loki
       - ./observability/loki-config.yml:/etc/loki/local-config.yml:ro
     ports:
       - "${LOKI_PORT}:${LOKI_PORT}"
@@ -72,6 +75,8 @@ services:
     image: grafana/promtail:latest
     container_name: promtail
     volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./observability/promtail-config.yml:/etc/promtail/promtail.yml:ro
     command: -config.file=/etc/promtail/promtail.yml
     depends_on:
@@ -81,7 +86,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      -"${GRAFANA_PORT}:${GRAFANA_PORT}"
+      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
     volumes:
       - ./observability/grafana/provisionig:/etc/grafana/provisioning
       - grafana-data:/var/lib/grafana
@@ -137,3 +142,4 @@ volumes:
   keycloak-data:
   cars-data:
   grafana-data:
+  loki-data:
