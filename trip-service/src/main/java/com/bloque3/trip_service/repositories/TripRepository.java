@@ -18,7 +18,7 @@ public interface TripRepository extends ReactiveCrudRepository<Trip, UUID> {
     Mono<Trip> findActiveById(UUID id);
 
     @Query("SELECT * FROM trips WHERE driver_id = :driverId AND is_active = TRUE")
-    Mono<Trip> findActiveByDriverId(UUID driverId);
+    Flux<Trip> findActiveByDriverId(UUID driverId);
 
     @Query("""
         SELECT * FROM trips 

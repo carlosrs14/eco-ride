@@ -1,24 +1,29 @@
 package com.bloque3.trip_service.controllers.dto.request;
 
+import java.time.Instant;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class TripRequest {
+public record TripRequest(
     @NotNull(message = "Available seats is required")
-    private Integer availableSeats;
+    Integer availableSeats,
+
+    @NotNull(message = "Start time is required")
+    Instant startTime,
 
     @NotNull(message = "Price per seat is required")
-    private Double pricePerSeat;
+    Double pricePerSeat,
 
     @NotBlank(message = "Origin ID is required")
-    private String originId;
+    String originId,
 
     @NotBlank(message = "Destination ID is required")
-    private String destinationId;
+    String destinationId,
 
     @NotBlank(message = "Driver ID is required")
-    private String driverId;
+    String driverId,
 
     @NotBlank(message = "Car ID is required")
-    private String carId;
-}
+    String carId
+){}
