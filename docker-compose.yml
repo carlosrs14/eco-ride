@@ -16,6 +16,8 @@ services:
     container_name: api-gateway
     ports:
       - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    environment:
+      SERVER_PORT: ${API_GATEWAY_PORT}
     depends_on:
       - config-server
   

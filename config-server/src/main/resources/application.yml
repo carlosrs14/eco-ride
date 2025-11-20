@@ -21,9 +21,9 @@ management:
     web:
       exposure:
         include:
-        - health
-        - info
-        - prometheus
+          - health
+          - info
+          - prometheus
       base-path: /actuator
   
   endpoint:

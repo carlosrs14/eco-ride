@@ -1,6 +1,3 @@
-server:
-  port: 8000
-
 spring:
   application:
     name: api-gateway
@@ -11,3 +8,17 @@ spring:
           uri: http:car-service:${CAR_SERVICE_PORT}
           predicates: 
             - Path=/api/v1/cars/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - health
+        - info
+        - prometheus
+      base-path: /actuator
+  
+  endpoint:
+    prometheus:
+      access: unrestricted
