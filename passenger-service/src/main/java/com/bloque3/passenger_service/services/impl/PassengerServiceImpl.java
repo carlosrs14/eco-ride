@@ -13,6 +13,9 @@ import com.bloque3.passenger_service.models.Passenger;
 import com.bloque3.passenger_service.repositories.PassengerRepository;
 import com.bloque3.passenger_service.services.PassengerService;
 
+import jakarta.validation.Valid;
+import lombok.NonNull;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -28,7 +31,7 @@ public class PassengerServiceImpl implements PassengerService{
     
    
     @Override
-    public Mono<PassengerResponseDTO> create(PassengerRequestDTO passengerRequestDTO) {
+    public Mono<PassengerResponseDTO> create(@Valid PassengerRequestDTO passengerRequestDTO) {
         Passenger passenger = passengerMapper.toEntity(passengerRequestDTO);
         passenger.setIsActive(true);
         passenger.setCreatedAt(Instant.now());
@@ -38,7 +41,7 @@ public class PassengerServiceImpl implements PassengerService{
     }
 
     @Override
-    public Mono<PassengerResponseDTO> findById(String id) {
+    public Mono<PassengerResponseDTO> findById(@NonNull String id) {
         UUID uuid = UUID.fromString(id);
         return passengerRepository.findByIdAndIsActiveTrue(uuid)
         .switchIfEmpty(
@@ -51,7 +54,7 @@ public class PassengerServiceImpl implements PassengerService{
     }
 
     @Override
-    public Mono<PassengerResponseDTO> update(String id, PassengerRequestDTO passengerRequestDTO) {
+    public Mono<PassengerResponseDTO> update(@NonNull String id, PassengerRequestDTO passengerRequestDTO) {
         UUID uuid = UUID.fromString(id);
         return passengerRepository.findByIdAndIsActiveTrue(uuid)
         .switchIfEmpty(
@@ -68,7 +71,7 @@ public class PassengerServiceImpl implements PassengerService{
     }
 
     @Override
-    public Mono<Void> delete(String id) {
+    public Mono<Void> delete(@NonNull String id) {
         UUID uuid = UUID.fromString(id);
         return passengerRepository.findByIdAndIsActiveTrue(uuid)
                 .switchIfEmpty(
@@ -83,11 +86,21 @@ public class PassengerServiceImpl implements PassengerService{
     }
 
     @Override
-    public Mono<PassengerResponseDTO> findByKeycloakSub(String keycloakSub) {
+    public Mono<PassengerResponseDTO> findByKeycloakSub(@NonNull String keycloakSub) {
         return passengerRepository.findByKeycloakSubAndIsActiveTrue(keycloakSub)
         .switchIfEmpty(
             Mono.error(new ResourceNotFoundException("passenger", "keycloakSub", keycloakSub))
         )
+        .map(
+            passengerMapper::toDto
+        );
+    }
+
+
+    @Override
+    public Flux<PassengerResponseDTO> findAll() {
+        return passengerRepository.findAllByIsActiveTrue()
+        .switchIfEmpty(Flux.error(new ResourceNotFoundException("Passenger", "all", null)))
         .map(
             passengerMapper::toDto
         );
