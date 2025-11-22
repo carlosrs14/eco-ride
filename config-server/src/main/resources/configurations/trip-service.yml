@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: trip-service
+
+  main: 
+    web-application-type: reactive
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  eureka:
+    instance:
+      hostname: ${spring.application.name}
+    client:
+      service-url:
+      defaultZone: http://eureka-server:${EUREKA_SERVER_PORT}/eureka
+
+
+

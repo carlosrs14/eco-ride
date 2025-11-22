@@ -61,6 +61,26 @@ services:
       - config-server
       - eureka-server
       - cars-db
+    
+    trip-service:
+      build:
+      context: ./trip-service
+      dockerfile: Dockerfile
+      container_name: trip-service
+      ports:
+      - "${TRIP_SERVICE_PORT}:${TRIP_SERVICE_PORT}"
+      environment:
+        SERVER_PORT: ${TRIP_SERVICE_PORT}
+        CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+        SPRING_R2DBC_URL: r2dbc:postgresql://trips-db:${TRIPS_DB_PORT}/${TRIPS_DB_NAME}
+        SPRING_R2DBC_USERNAME: ${TRIPS_DB_USER}
+        SPRING_R2DBC_PASSWORD: ${TRIPS_DB_PASS}
+        SPRING_FLYWAY_URL: jdbc:postgresql://trips-db:${TRIPS_DB_PORT}/${TRIPS_DB_NAME}
+        SPRING_FLYWAY_USER: ${TRIPS_DB_USER}
+        SPRING_FLYWAY_PASSWORD: ${TRIPS_DB_PASS}
+      depends_on:
+        - config-server
+        - trips-db
 
   rabbit-mq:
     container_name: ${RABBIT_MQ_HOST}
@@ -83,6 +103,18 @@ services:
       POSTGRES_DB: ${CARS_DB_NAME}
     volumes:
       - cars-data:/var/lib/postgresql/data
+
+  trips-db:
+    container_name: ${TRIPS_DB_NAME}
+    image: ${TRIPS_DB_IMAGE}
+    ports:
+      - "${TRIPS_DB_PORT}:${TRIPS_DB_PORT}"
+    environment:
+      POSTGRES_USER: ${TRIPS_DB_USER}
+      POSTGRES_PASSWORD: ${TRIPS_DB_PASS}
+      POSTGRES_DB: ${TRIPS_DB_NAME}
+    volumes:
+      - trips-data:/var/lib/postgresql/data
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -124,3 +156,6 @@ services:
 volumes:
   keycloak-data:
   cars-data:
+  trips-data:
+  grafana-data:
+  loki-data:
