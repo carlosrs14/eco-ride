@@ -15,6 +15,8 @@ import com.bloque3.passenger_service.repositories.DriverRepository;
 import com.bloque3.passenger_service.services.DriverService;
 import com.bloque3.passenger_service.services.PassengerService;
 
+import lombok.NonNull;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -35,7 +37,7 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public Mono<DriverResponseDTO> create(DriverRequestDTO driverRequestDTO) {
         return passengerService.findById(driverRequestDTO.passengerId())
-                .flatMap(passenger -> {
+                .flatMap(driv -> {
                     Driver driver = driverMapper.toEntity(driverRequestDTO);
                     driver.setIsActive(true);
                     driver.setCreatedAt(Instant.now());
@@ -45,7 +47,7 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public Mono<DriverResponseDTO> findById(String id) {
+    public Mono<DriverResponseDTO> findById(@NonNull String id) {
         UUID uuid = UUID.fromString(id);
         return driverRepository.findByIdAndIsActiveTrue(uuid)
         .switchIfEmpty(
@@ -57,17 +59,42 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public Mono<DriverResponseDTO> update(String id, DriverRequestUpdateDTO driverRequestUpdateDTO) {
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public Mono<DriverResponseDTO> update(@NonNull String id, DriverRequestUpdateDTO driverRequestUpdateDTO) {
+        UUID uuid = UUID.fromString(id);
+        return driverRepository.findByIdAndIsActiveTrue(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("passenger", "id", id))
+                )
+                .flatMap(driv -> {
+                    Driver driver = driverMapper.toEntity(driverRequestUpdateDTO);
+                    driver.setId(uuid);
+                    driver.setUpdatedAt(Instant.now());
+                    return driverRepository.save(driver);
+                }).map(driverMapper::toDto);
         
     }   
 
     @Override
-    public Mono<Void> delete(String id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public Mono<Void> delete(@NonNull String id) {
+        UUID uuid = UUID.fromString(id);
+        return driverRepository.findByIdAndIsActiveTrue(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("id", id, uuid))
+                )
+                .flatMap(driv -> {
+                    driv.setIsActive(false);
+                    driv.setUpdatedAt(Instant.now());
+                    return driverRepository.save(driv);
+                }).then();
     }
 
-    
 
+    @Override
+    public Flux<DriverResponseDTO> findAll() {
+        return driverRepository.findAllByIsActiveTrue()
+        .switchIfEmpty(Flux.error(new ResourceNotFoundException("Driver", "all", null)))
+        .map(
+            driverMapper::toDto
+        );
+    }
 }
