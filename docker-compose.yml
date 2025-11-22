@@ -34,6 +34,7 @@ services:
       CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
       CAR_SERVICE_PORT: ${CAR_SERVICE_PORT}
       EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
+      KEYCLOACK_PORT: ${KC_PORT}
     depends_on:
       - config-server
       - eureka-server
@@ -97,9 +98,9 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
     volumes:
-      - ./realm-ecoride.json:/opt/keycloak/data/import/realm-ecoride.json
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-ecoride.json
     ports:
-      - "${KC_PORT}:8180"
+      - "${KC_PORT}:${KC_PORT}"
     depends_on:
       - keycloak-db
 

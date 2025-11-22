@@ -8,6 +8,11 @@ spring:
           uri: lb://car-service
           predicates: 
             - Path=/api/v1/cars/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:${KEYCLOACK_PORT}/realms/ecoride
 eureka:
   instance:
     hostname: ${spring.application.name}
