@@ -7,8 +7,21 @@ services:
     ports:
       - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
     environment:
-      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+      SERVER_PORT: ${CONFIG_SERVER_PORT}
   
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
+    environment:
+      SERVER_PORT: ${EUREKA_SERVER_PORT}
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+    depends_on:
+      - config-server
+
   api-gateway:
     build:
       context: ./api-gateway
@@ -16,8 +29,16 @@ services:
     container_name: api-gateway
     ports:
       - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    environment:
+      SERVER_PORT: ${API_GATEWAY_PORT}
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+      CAR_SERVICE_PORT: ${CAR_SERVICE_PORT}
+      EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
+      KEYCLOACK_PORT: ${KC_PORT}
+      GATEWAY_KEYCLOACK_CLIENT_SECRET: ${GATEWAY_KEYCLOACK_CLIENT_SECRET}
     depends_on:
       - config-server
+      - eureka-server
   
   car-service:
     build:
@@ -35,8 +56,10 @@ services:
       SPRING_FLYWAY_URL: jdbc:postgresql://cars-db:${CARS_DB_PORT}/${CARS_DB_NAME}
       SPRING_FLYWAY_USER: ${CARS_DB_USER}
       SPRING_FLYWAY_PASSWORD: ${CARS_DB_PASS}
+      EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
     depends_on:
       - config-server
+      - eureka-server
       - cars-db
 
   rabbit-mq:
@@ -49,56 +72,11 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBIT_MQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBIT_MQ_PASS}
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    ports:
-      - "${PROMETHEUS_PORT}:${PROMETHEUS_PORT}"
-    depends_on:
-      - car-service
-      - api-gateway
-      - config-server
-    
-  loki:
-    image: grafana/loki:latest
-    container_name: loki
-    user: "0:0"
-    volumes:
-      - ./observability/loki-data:/loki
-      - ./observability/loki-config.yml:/etc/loki/local-config.yml:ro
-    ports:
-      - "${LOKI_PORT}:${LOKI_PORT}"
-
-  promtail:
-    image: grafana/promtail:latest
-    container_name: promtail
-    volumes:
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./observability/promtail-config.yml:/etc/promtail/promtail.yml:ro
-    command: -config.file=/etc/promtail/promtail.yml
-    depends_on:
-      - loki
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
-    volumes:
-      - ./observability/grafana/provisionig:/etc/grafana/provisioning
-      - grafana-data:/var/lib/grafana
-    depends_on:
-      - prometheus
-      - loki
-
   cars-db:
     container_name: ${CARS_DB_NAME}
     image: ${CARS_DB_IMAGE}
-    ports:
-      - "${CARS_DB_PORT}:${CARS_DB_PORT}"
+    #ports:
+    #  - "${CARS_DB_PORT}:${CARS_DB_PORT}"
     environment:
       POSTGRES_USER: ${CARS_DB_USER}
       POSTGRES_PASSWORD: ${CARS_DB_PASS}
@@ -120,16 +98,21 @@ services:
       KC_DB_PASSWORD: ${KC_DB_PASS}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+      KC_HOSTNAME: keycloak
+      KC_HOSTNAME_PORT: ${KC_PORT}
+      KC_HOSTNAME_STRICT: 'false'
     volumes:
-      - ./realm-ecoride.json:/opt/keycloak/data/import/realm-ecoride.json
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-ecoride.json
     ports:
-      - "${KC_PORT}:8180"
+      - "${KC_PORT}:${KC_PORT}"
     depends_on:
       - keycloak-db
 
   keycloak-db:
     image: postgres:15
     container_name: keycloak-db
+    ports:
+      - "${KC_DB_PORT}:${KC_DB_PORT}"
     environment:
       POSTGRES_DB: ${KC_DB_NAME}
       POSTGRES_USER: ${KC_DB_USER}
@@ -141,5 +124,3 @@ services:
 volumes:
   keycloak-data:
   cars-data:
-  grafana-data:
-  loki-data:
