@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.bloque3.passenger_service.models.Rating;
 
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Repository
 public interface RatingRepository extends ReactiveCrudRepository<Rating, UUID>{
     
-    Mono<Rating> findByIdAndIsActiveTrue(UUID id);
+    Flux<Rating> findAllByFromId(UUID passengerId);
 
 }
