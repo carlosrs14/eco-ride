@@ -9,5 +9,9 @@ public record PassengerRequestDTO(
 
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
-    String email
+    String email,
+
+    @NotBlank(message = "KeycloakSub is required")
+    String keycloakSub
+
 ) {}
