@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS passengers (
     email VARCHAR(50) NOT NULL UNIQUE,
     rating_avg FLOAT NOT NULL DEFAULT 0.0,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    keycloak_sub VARCHAR(50) NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -15,7 +16,7 @@ CREATE INDEX IF NOT EXISTS passengers_email_idx ON passengers(email);
 
 CREATE TABLE IF NOT EXISTS drivers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    passenger_id UUID NOT NULL,
+    passenger_id UUID NOT NULL UNIQUE,
     license_no VARCHAR(50) NOT NULL UNIQUE,
     verification_status BOOLEAN NOT NULL DEFAULT FALSE,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
