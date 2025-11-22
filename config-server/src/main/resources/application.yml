@@ -1,6 +1,3 @@
-server:
-  port: ${CONFIG_SERVER_PORT}
-
 spring:
   application:
     name: config-server

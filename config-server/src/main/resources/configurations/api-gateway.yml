@@ -1,6 +1,3 @@
-server:
-  port: 8000
-
 spring:
   application:
     name: api-gateway
@@ -8,6 +5,12 @@ spring:
     gateway:
       routes:
         - id: car
-          uri: http:car-service:${CAR_SERVICE_PORT}
+          uri: lb://car-service
           predicates: 
             - Path=/api/v1/cars/**
+eureka:
+  instance:
+    hostname: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://eureka-server:${EUREKA_SERVER_PORT}/eureka

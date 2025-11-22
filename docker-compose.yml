@@ -7,8 +7,21 @@ services:
     ports:
       - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
     environment:
-      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+      SERVER_PORT: ${CONFIG_SERVER_PORT}
   
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}"
+    environment:
+      SERVER_PORT: ${EUREKA_SERVER_PORT}
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+    depends_on:
+      - config-server
+
   api-gateway:
     build:
       context: ./api-gateway
@@ -16,8 +29,14 @@ services:
     container_name: api-gateway
     ports:
       - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    environment:
+      SERVER_PORT: ${API_GATEWAY_PORT}
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+      CAR_SERVICE_PORT: ${CAR_SERVICE_PORT}
+      EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
     depends_on:
       - config-server
+      - eureka-server
   
   car-service:
     build:
@@ -35,8 +54,10 @@ services:
       SPRING_FLYWAY_URL: jdbc:postgresql://cars-db:${CARS_DB_PORT}/${CARS_DB_NAME}
       SPRING_FLYWAY_USER: ${CARS_DB_USER}
       SPRING_FLYWAY_PASSWORD: ${CARS_DB_PASS}
+      EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
     depends_on:
       - config-server
+      - eureka-server
       - cars-db
 
   rabbit-mq:

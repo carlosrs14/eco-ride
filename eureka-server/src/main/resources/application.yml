@@ -1,6 +1,7 @@
 spring:
   application:
-    name: api-gateway
+    name: eureka-server
   config:
     import: configserver:http://config-server:${CONFIG_SERVER_PORT}
+
 
