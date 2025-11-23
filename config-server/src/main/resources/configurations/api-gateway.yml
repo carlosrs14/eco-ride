@@ -8,6 +8,10 @@ spring:
           uri: lb://car-service
           predicates: 
             - Path=/api/v1/cars/**
+        - id: trip
+          uri: lb://trip-service
+          predicates:
+            - Path=/api/v1/trips/**
   security:
     oauth2:
       resourceserver:
