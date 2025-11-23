@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.bloque3.trip_service.clients.PassengerClient;
-import com.bloque3.trip_service.clients.dtos.PassengerResponse;
+import com.bloque3.trip_service.clients.dto.PassengerResponse;
 import com.bloque3.trip_service.controllers.dto.request.ReservationRequest;
 import com.bloque3.trip_service.controllers.dto.response.ReservationResponse;
 import com.bloque3.trip_service.controllers.dto.response.TripResponse;

@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.bloque3.trip_service.clients.dtos.DriverResponse;
+import com.bloque3.trip_service.clients.dto.DriverResponse;
 
 @FeignClient(name = "driver-service", path = "/api/v1")
 public interface DriverClient {

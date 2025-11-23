@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.bloque3.trip_service.clients.CarClient;
 import com.bloque3.trip_service.clients.DriverClient;
-import com.bloque3.trip_service.clients.dtos.CarResponse;
-import com.bloque3.trip_service.clients.dtos.DriverResponse;
+import com.bloque3.trip_service.clients.dto.CarResponse;
+import com.bloque3.trip_service.clients.dto.DriverResponse;
 import com.bloque3.trip_service.controllers.dto.request.TripRequest;
 import com.bloque3.trip_service.controllers.dto.response.LocationResponse;
 import com.bloque3.trip_service.controllers.dto.response.TripResponse;
@@ -43,7 +43,7 @@ public class TripServiceImpl implements TripService {
     @Override
     public Mono<TripResponse> create(TripRequest tripRequest) {
         Mono<CarResponse> carResponseMono = Mono.fromCallable(() ->carClient.getCarById(tripRequest.carId()))
-                    .subscribeOn(Schedulers.boundedElastic()  )
+                    .subscribeOn(Schedulers.boundedElastic())
                     .switchIfEmpty(Mono.error(new ResourceNotFoundException("car", "id", tripRequest.carId())));
 
         Mono<DriverResponse> driverResponseMono = Mono.fromCallable(() ->driverClient.getDriverById(tripRequest.driverId()))
