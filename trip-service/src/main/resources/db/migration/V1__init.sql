@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS  location_types (
     is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-CREATE TABBLE trip_status (
+CREATE TABLE IF NOT EXISTS trip_status (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     status VARCHAR(50) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -69,13 +69,14 @@ CREATE TABLE IF NOT EXISTS reservation_status (
 
 CREATE TABLE IF NOT EXISTS trip_history (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    trip_id UUID NOT NULL,  
-    order INT NOT NULL,
+    trip_id UUID NOT NULL,
+    position INT NOT NULL,
     trip_status_id UUID NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
+
 CREATE INDEX IF NOT EXISTS trip_history_trip_id_idx ON trip_history (trip_id);
 CREATE INDEX IF NOT EXISTS idx_trip_history_trip_status_id ON trip_history(trip_status_id);
 
@@ -83,16 +84,13 @@ CREATE INDEX IF NOT EXISTS idx_trip_history_trip_status_id ON trip_history(trip_
 CREATE TABLE IF NOT EXISTS reservation_history (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     reservation_id UUID NOT NULL,  
+    position INT NOT NULL,
     reservation_status_id UUID NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
+
 CREATE INDEX IF NOT EXISTS idx_reservation_history_reservation_id ON reservation_history(reservation_id);
 CREATE INDEX IF NOT EXISTS idx_reservation_history_reservation_status_id ON reservation_history(reservation_status_id);
-
-
-
-
-
 

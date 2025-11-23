@@ -3,6 +3,8 @@ package com.bloque3.trip_service.services.impl;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
 import com.bloque3.trip_service.clients.PassengerClient;
 import com.bloque3.trip_service.clients.dtos.PassengerResponse;
 import com.bloque3.trip_service.controllers.dto.request.ReservationRequest;
@@ -20,12 +22,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-public class ReservationServiceImpl implements ReservationService{
+@Service
+public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final ReservationMapper reservationMapper;
     private final PassengerClient passengerClient;
     private final TripService tripService;
-
 
     public ReservationServiceImpl(ReservationRepository reservationRepository, ReservationMapper reservationMapper, PassengerClient passengerClient, TripService tripService) {
         this.reservationRepository = reservationRepository;
@@ -33,7 +35,6 @@ public class ReservationServiceImpl implements ReservationService{
         this.passengerClient = passengerClient;
         this.tripService = tripService;
     }
-
 
     @Override
     public Mono<ReservationResponse> create(ReservationRequest reservationRequest) {
@@ -53,9 +54,7 @@ public class ReservationServiceImpl implements ReservationService{
                 return reservationRepository.save(reservation);
 
             }).map(reservationMapper::toDto);
-
     }
-
 
     @Override
     public Mono<ReservationResponse> findById(String id) {
@@ -64,7 +63,6 @@ public class ReservationServiceImpl implements ReservationService{
             .switchIfEmpty(Mono.error(new ResourceNotFoundException("reservation", "id", id))
         )
         .map(reservationMapper::toDto); 
-
     }
 
     @Override
@@ -99,7 +97,6 @@ public class ReservationServiceImpl implements ReservationService{
                 reservation.setId(uuid);
                 return reservationRepository.save(reservation);
             }).map(reservationMapper::toDto);
-
     }
 
     @Override
@@ -113,6 +110,4 @@ public class ReservationServiceImpl implements ReservationService{
                 return reservationRepository.save(reservation);
             }).then();
     }
-
-    
 }

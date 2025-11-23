@@ -22,6 +22,9 @@ public class ReservationHistory {
     @Column("reservation_id")
     private UUID reservationId;
 
+    @Column("position")
+    private Integer order;
+
     @Column("reservation_status_id")
     private UUID reservationStatusId;
     

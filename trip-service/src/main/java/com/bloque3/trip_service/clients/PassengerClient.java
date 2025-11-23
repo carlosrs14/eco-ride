@@ -9,7 +9,7 @@ import com.bloque3.trip_service.clients.dtos.PassengerResponse;
 @FeignClient(name = "passenger-service", path = "/api/v1")
 public interface PassengerClient {
     
-    @GetMapping("passengers/{id}")
+    @GetMapping("/passengers/{id}")
     PassengerResponse getPassengerById(@PathVariable String id);
 
 }

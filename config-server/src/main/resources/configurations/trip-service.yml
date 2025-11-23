@@ -15,7 +15,7 @@ spring:
       hostname: ${spring.application.name}
     client:
       service-url:
-      defaultZone: http://eureka-server:${EUREKA_SERVER_PORT}/eureka
+        defaultZone: http://eureka-server:${EUREKA_SERVER_PORT}/eureka
 
 
 

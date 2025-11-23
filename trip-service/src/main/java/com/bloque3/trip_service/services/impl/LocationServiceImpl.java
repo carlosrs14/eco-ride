@@ -2,6 +2,8 @@ package com.bloque3.trip_service.services.impl;
 
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
 import com.bloque3.trip_service.controllers.dto.response.LocationResponse;
 import com.bloque3.trip_service.exceptions.ResourceNotFoundException;
 import com.bloque3.trip_service.mappers.LocationMapper;
@@ -10,7 +12,8 @@ import com.bloque3.trip_service.services.LocationService;
 
 import reactor.core.publisher.Mono;
 
-public class LocationServiceImpl implements LocationService{
+@Service
+public class LocationServiceImpl implements LocationService {
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
 

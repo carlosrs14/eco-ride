@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.bloque3.trip_service.clients.dtos.CarResponse;
 
-@FeignClient(name = "car-service", path = "/api/v1/cars")
+@FeignClient(name = "car-service", path = "/api/v1")
 public interface CarClient {
 
-    @GetMapping("cars/{id}")
+    @GetMapping("/cars/{id}")
     CarResponse getCarById(@PathVariable String id);
 }

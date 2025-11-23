@@ -25,8 +25,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Service
-public class TripServiceImpl implements TripService{
-
+public class TripServiceImpl implements TripService {
     private final DriverClient driverClient;
     private final CarClient carClient;
     private final LocationService locationService;

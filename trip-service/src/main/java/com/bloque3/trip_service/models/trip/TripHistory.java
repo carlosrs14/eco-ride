@@ -21,7 +21,8 @@ public class TripHistory {
 
     @Column("trip_id")
     private UUID tripId;
-
+    
+    @Column("position")
     private Integer order;
     
     @Column("trip_state_id")
