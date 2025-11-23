@@ -5,7 +5,7 @@ import java.util.UUID;
 import lombok.Builder;
 
 @Builder
-public record PaymentFailed(
+public record PaymentFailedEvent(
     UUID reservationId,
     String reason,
     UUID sagaId,

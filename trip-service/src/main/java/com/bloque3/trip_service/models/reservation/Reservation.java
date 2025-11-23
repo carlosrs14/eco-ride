@@ -1,5 +1,6 @@
 package com.bloque3.trip_service.models.reservation;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -27,6 +28,9 @@ public class Reservation {
     
     @Column("seats_reserved")
     private Integer seatsReserved;
+
+    @Column("amount")
+    private BigDecimal amount;
 
     @CreatedDate
     @Column("created_at")

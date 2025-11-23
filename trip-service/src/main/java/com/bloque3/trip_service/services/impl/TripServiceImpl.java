@@ -20,25 +20,19 @@ import com.bloque3.trip_service.repositories.TripRepository;
 import com.bloque3.trip_service.services.LocationService;
 import com.bloque3.trip_service.services.TripService;
 
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Service
+@RequiredArgsConstructor
 public class TripServiceImpl implements TripService {
     private final DriverClient driverClient;
     private final CarClient carClient;
     private final LocationService locationService;
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;
-
-    public TripServiceImpl(TripRepository tripRepository, TripMapper tripMapper, DriverClient driverClient, CarClient carClient, LocationService locationService) {
-        this.tripRepository = tripRepository;
-        this.tripMapper = tripMapper;
-        this.carClient = carClient;
-        this.locationService = locationService;
-        this.driverClient = driverClient;
-    }
 
     @Override
     public Mono<TripResponse> create(TripRequest tripRequest) {

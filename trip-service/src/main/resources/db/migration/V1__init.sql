@@ -2,6 +2,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE IF NOT EXISTS  trips (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    price_per_seat DECIMAL(10, 2) NOT NULL,
     driver_id UUID NOT NULL,
     car_id UUID NOT NULL,
     origin_id UUID NOT NULL,
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS  reservations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     trip_id UUID NOT NULL,
     seats_reserved INT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
     passenger_id UUID NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
