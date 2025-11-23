@@ -11,10 +11,10 @@ spring:
     locations: classpath:db/migration
 
   rabbitmq:
-    host: ${RABBIT_HOST}
-    port: ${RABBIT_PORT}
-    username: ${RABBIT_USER}
-    password: ${RABBIT_PASSWORD}
+    host: ${RABBT_MQ_HOST}
+    port: ${RABBIT_MQ_PORT}
+    username: ${RABBIT_MQ_USER}
+    password: ${RABBIT_MQ_PASS}
     virtual-host: /
 
   cloud:

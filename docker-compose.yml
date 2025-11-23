@@ -112,6 +112,10 @@ services:
       SPRING_FLYWAY_USER: ${TRIPS_DB_USER}
       SPRING_FLYWAY_PASSWORD: ${TRIPS_DB_PASS}
       EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
+      RABBIT_MQ_HOST: ${RABBIT_MQ_HOST}
+      RABBIT_MQ_PORT: ${RABBIT_MQ_PORT}
+      RABBIT_MQ_USER: ${RABBIT_MQ_USER}
+      RABBIT_MQ_PASS: ${RABBIT_MQ_PASS}
     depends_on:
       eureka-server:
         condition: service_healthy
