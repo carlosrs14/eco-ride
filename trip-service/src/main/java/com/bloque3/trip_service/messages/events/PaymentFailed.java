@@ -1,4 +1,4 @@
-package com.bloque3.trip_service.events;
+package com.bloque3.trip_service.messages.events;
 
 import java.util.UUID;
 

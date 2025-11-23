@@ -22,6 +22,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
+    @ExceptionHandler(MessageQueueException.class)
+    public ResponseEntity<ApiError> handleMessageQueueException(MessageQueueException ex, ServerWebExchange exchange) {
+        ApiError apiError = ApiError.builder()
+            .status(HttpStatus.SERVICE_UNAVAILABLE)
+            .error("Message Queue Error")
+            .message(ex.getMessage())
+            .path(exchange.getRequest().getURI().getPath())
+            .timestamp(Instant.now())
+            .build();
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(apiError);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGoblaException(Exception ex, ServerWebExchange exchange) {
         ApiError apiError = ApiError.builder()
