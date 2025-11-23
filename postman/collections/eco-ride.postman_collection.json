@@ -1,0 +1,148 @@
+{
+  "info": {
+    "_postman_id": "3b223239-3cc5-4e48-8230-a13772834000",
+    "name": "eco ride",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "login",
+          "id": "706fb543-7910-41b8-90b2-7aa6958930ca",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{CLIENT_ID}}",
+                  "type": "text"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{CLIENT_SECRET}}",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{USERNAME}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{PASSWORD}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8180/realms/ecoride/protocol/openid-connect/token",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8180",
+              "path": [
+                "realms",
+                "ecoride",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            }
+          }
+        }
+      ],
+      "id": "de14afb7-dfa4-4686-9f80-e3acc7c8016e"
+    },
+    {
+      "name": "cars",
+      "item": [
+        {
+          "name": "cars by driver",
+          "id": "1c1513be-a1f2-425f-b530-1c32d5303a3b",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/v1/cars/driver/550e8400-e29b-41d4-a716-446655440000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "v1",
+                "cars",
+                "driver",
+                "550e8400-e29b-41d4-a716-446655440000"
+              ]
+            }
+          }
+        }
+      ],
+      "id": "bf8b24e8-f609-4445-9bdd-ac1e717a4da8"
+    },
+    {
+      "name": "trips",
+      "item": [
+        {
+          "name": "create",
+          "id": "3d678543-8f07-4362-ad85-0ca640166bcc",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/v1/trips",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "v1",
+                "trips"
+              ]
+            }
+          }
+        }
+      ],
+      "id": "162ff673-3a7c-4535-aa0c-224b6d5ae652"
+    },
+    {
+      "name": "reservations",
+      "item": [],
+      "id": "0fceecc9-9be4-4252-bdb1-b7bc2848a3ff"
+    }
+  ]
+}
