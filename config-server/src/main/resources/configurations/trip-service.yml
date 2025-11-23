@@ -10,12 +10,38 @@ spring:
     baseline-on-migrate: true
     locations: classpath:db/migration
 
-  eureka:
-    instance:
-      hostname: ${spring.application.name}
-    client:
-      service-url:
-        defaultZone: http://eureka-server:${EUREKA_SERVER_PORT}/eureka
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USER}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: /
 
+  cloud:
+    stream:
+      default:
+        contentType: application/json
+      bindings:
+        reservationRequested-out-0:
+          destination: reservation.exchange
+        reservationConfirmed-out-0:
+          destination: reservation.exchange
+        reservationCancelled-out-0:
+          destination: reservation.exchange
+
+        paymentAuthorized-in-0:
+          destination: payment.exchange
+          group: trip-service-group
+        paymentFailed-in-0:
+          destination: payment.exchange
+          group: trip-service-group
+
+
+eureka:
+  instance:
+    hostname: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://eureka-server:${EUREKA_SERVER_PORT}/eureka
 
 
