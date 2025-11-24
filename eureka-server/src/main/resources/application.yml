@@ -2,6 +2,8 @@ spring:
   application:
     name: eureka-server
   config:
+    activate:
+      on-profile: "!test"
     import: configserver:http://config-server:${CONFIG_SERVER_PORT}
 
 
