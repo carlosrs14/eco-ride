@@ -1,0 +1,63 @@
+package com.bloque3.passenger_service.controllers;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bloque3.passenger_service.controllers.dtos.ratingDtos.request.RatingRequestDTO;
+import com.bloque3.passenger_service.controllers.dtos.ratingDtos.request.RatingRequestUpdateDTO;
+import com.bloque3.passenger_service.controllers.dtos.ratingDtos.response.RatingResponseDTO;
+import com.bloque3.passenger_service.services.RatingService;
+
+import jakarta.validation.Valid;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
+
+
+
+@RestController
+@RequestMapping("api/v1/ratings")
+public class RatingController {
+
+    private final RatingService ratingService;
+
+    public RatingController(RatingService ratingService) {
+        this.ratingService = ratingService;
+    }
+
+    @PostMapping("")
+    public Mono<RatingResponseDTO> create(@Valid @RequestBody RatingRequestDTO ratingRequestDTO) {
+        return ratingService.create(ratingRequestDTO);
+    }
+
+    @GetMapping("")
+    public Flux<RatingResponseDTO> findAll() {
+        return ratingService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Mono<RatingResponseDTO> findAllById(@PathVariable String id) {
+        return ratingService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Mono<RatingResponseDTO> update(@PathVariable String id,@Valid @RequestBody RatingRequestUpdateDTO ratingRequestUpdateDTO) {
+        return ratingService.update(id,ratingRequestUpdateDTO);
+    }
+
+    @GetMapping("/passenger/{id}")
+    public Flux<RatingResponseDTO> finAllByPassengerId(@PathVariable String id) {
+        return ratingService.findAllByPassengerId(id);
+    }
+
+    
+    
+    
+    
+}
