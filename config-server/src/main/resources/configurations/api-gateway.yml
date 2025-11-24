@@ -12,6 +12,11 @@ spring:
           uri: lb://trip-service
           predicates:
             - Path=/api/v1/trips/**
+        - id: passenger
+          uri: lb://passenger-service
+          predicates:
+            - Path=/api/v1/passengers/**
+
   security:
     oauth2:
       resourceserver:
