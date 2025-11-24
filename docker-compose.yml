@@ -8,6 +8,18 @@ services:
       - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
     environment:
       SERVER_PORT: ${CONFIG_SERVER_PORT}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://config-server:${CONFIG_SERVER_PORT}/actuator/health"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+      start_period: 30s
+    profiles:
+      - core
+      - branch-car
+      - branch-trip
+      - branch-passenger
+      - default
   
   eureka-server:
     build:
@@ -19,8 +31,21 @@ services:
     environment:
       SERVER_PORT: ${EUREKA_SERVER_PORT}
       CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://eureka-server:${EUREKA_SERVER_PORT}/actuator/health"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+      start_period: 30s
     depends_on:
-      - config-server
+      config-server:
+        condition: service_healthy
+    profiles:
+      - core
+      - branch-car
+      - branch-trip
+      - branch-passenger
+      - default
 
   api-gateway:
     build:
@@ -38,8 +63,14 @@ services:
       KEYCLOACK_PORT: ${KC_PORT}
       GATEWAY_KEYCLOACK_CLIENT_SECRET: ${GATEWAY_KEYCLOACK_CLIENT_SECRET}
     depends_on:
-      - config-server
-      - eureka-server
+      eureka-server:
+        condition: service_healthy
+    profiles:
+      - core
+      - branch-car
+      - branch-trip
+      - branch-passenger
+      - default
   
   car-service:
     build:
@@ -57,9 +88,13 @@ services:
       SPRING_FLYWAY_PASSWORD: ${CARS_DB_PASS}
       EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
     depends_on:
-      - config-server
-      - eureka-server
-      - cars-db
+      eureka-server:
+        condition: service_healthy
+      cars-db:
+        condition: service_started 
+    profiles:
+      - branch-car
+      - default
     
   trip-service:
     build:
@@ -77,17 +112,19 @@ services:
       SPRING_FLYWAY_PASSWORD: ${TRIPS_DB_PASS}
       EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
     depends_on:
-      - config-server
-      - eureka-server
-      - trips-db
+      eureka-server:
+        condition: service_healthy
+      trips-db:
+        condition: service_started
+    profiles:
+      - branch-trip
+      - default
 
   passenger-service:
     build:
       context: ./passenger-service
       dockerfile: Dockerfile
     container_name: passenger-service
-    ports:
-      - "${PASSENGER_SERVICE_PORT}:${PASSENGER_SERVICE_PORT}"
     environment:
       SERVER_PORT: ${PASSENGER_SERVICE_PORT}
       CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
@@ -99,9 +136,14 @@ services:
       SPRING_FLYWAY_PASSWORD: ${PASSENGER_DB_PASS}
       EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
     depends_on:
-      - config-server
-      - eureka-server
-      - passengers-db
+      eureka-server:
+        condition: service_healthy
+      passengers-db:
+        condition: service_started
+    
+    profiles:
+      - branch-passenger
+      - default
 
   rabbit-mq:
     container_name: ${RABBIT_MQ_HOST}
@@ -112,6 +154,12 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBIT_MQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBIT_MQ_PASS}
+    profiles:
+      - core
+      - branch-car
+      - branch-trip
+      - branch-passenger
+      - default
 
   cars-db:
     container_name: ${CARS_DB_NAME}
@@ -122,6 +170,9 @@ services:
       POSTGRES_DB: ${CARS_DB_NAME}
     volumes:
       - cars-data:/var/lib/postgresql/data
+    profiles:
+      - branch-car
+      - default
 
   trips-db:
     container_name: ${TRIPS_DB_NAME}
@@ -132,18 +183,22 @@ services:
       POSTGRES_DB: ${TRIPS_DB_NAME}
     volumes:
       - trips-data:/var/lib/postgresql/data
+    profiles:
+      - branch-trip
+      - default
 
   passengers-db:
     container_name: ${PASSENGER_DB_NAME}
     image: ${PASSENGER_DB_IMAGE}
-    ports:
-      - "5434:5432" 
     environment:
       POSTGRES_USER: ${PASSENGER_DB_USER}
       POSTGRES_PASSWORD: ${PASSENGER_DB_PASS}
       POSTGRES_DB: ${PASSENGER_DB_NAME}
     volumes:
       - passengers-data:/var/lib/postgresql/data
+    profiles:
+      - branch-passenger
+      - default
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -168,6 +223,12 @@ services:
       - "${KC_PORT}:${KC_PORT}"
     depends_on:
       - keycloak-db
+    profiles:
+      - auth
+      - branch-car
+      - branch-trip
+      - branch-passenger
+      - default
 
   keycloak-db:
     image: postgres:15
@@ -180,7 +241,12 @@ services:
       POSTGRES_PASSWORD: ${KC_DB_PASS}
     volumes:
       - keycloak-data:/var/lib/postgresql/data
-
+    profiles:
+      - auth
+      - branch-car
+      - branch-trip
+      - branch-passenger
+      - default
 
 volumes:
   keycloak-data:
