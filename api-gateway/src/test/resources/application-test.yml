@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://example.com/.well-known/jwks.json

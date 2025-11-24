@@ -1,5 +1,8 @@
 spring:
   application:
     name: passenger-service
+
   config:
-   import: optional:configserver:http://config-server:${CONFIG_SERVER_PORT}/passenger-service.yml
+    activate:
+      on-profile: "!test"
+    import: configserver:http://config-server:${CONFIG_SERVER_PORT}

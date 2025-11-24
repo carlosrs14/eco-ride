@@ -1,5 +1,8 @@
 spring:
   application:
     name: car-service
+
   config:
+    activate:
+      on-profile: "!test"
     import: configserver:http://config-server:${CONFIG_SERVER_PORT}
