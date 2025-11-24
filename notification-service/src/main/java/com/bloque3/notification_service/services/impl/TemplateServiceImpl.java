@@ -3,7 +3,7 @@ package com.bloque3.notification_service.services.impl;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.jvnet.hk2.annotations.Service;
+import org.springframework.stereotype.Service;
 
 import com.bloque3.notification_service.controllers.request.TemplateRequest;
 import com.bloque3.notification_service.controllers.response.TemplateResponse;

@@ -178,6 +178,28 @@ services:
       - branch-payment
       - default
     
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
+    environment:
+      SERVER_PORT: ${NOTIFICATION_SERVICE_PORT}
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+      SPRING_R2DBC_URL: r2dbc:postgresql://notification-db:${NOTIFICATION_DB_PORT}/${NOTIFICATION_DB_NAME}
+      SPRING_R2DBC_USERNAME: ${NOTIFICATION_DB_USER}
+      SPRING_R2DBC_PASSWORD: ${NOTIFICATION_DB_PASS}
+      SPRING_FLYWAY_URL: jdbc:postgresql://notification-db:${NOTIFICATION_DB_PORT}/${NOTIFICATION_DB_NAME}
+      SPRING_FLYWAY_USER: ${NOTIFICATION_DB_USER}
+      SPRING_FLYWAY_PASSWORD: ${NOTIFICATION_DB_PASS}
+      EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
+    depends_on:
+      - config-server
+      - eureka-server
+      - notification-db
+
   rabbit-mq:
     container_name: ${RABBIT_MQ_HOST}
     image: rabbitmq:3-management
@@ -248,6 +270,18 @@ services:
       - default
   
 
+  notification-db:
+    container_name: ${NOTIFICATION_DB_NAME}
+    image: ${NOTIFICATION_DB_IMAGE}
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: ${NOTIFICATION_DB_USER}
+      POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASS}
+      POSTGRES_DB: ${NOTIFICATION_DB_NAME}
+    volumes:
+      - notification-data:/var/lib/postgresql/data
+
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
@@ -302,6 +336,7 @@ volumes:
   cars-data:
   passengers-data:
   payments-data:
+  notification-data:
   trips-data:
   grafana-data:
   loki-data:
