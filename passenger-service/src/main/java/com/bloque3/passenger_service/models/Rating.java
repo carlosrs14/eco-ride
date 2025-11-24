@@ -27,6 +27,6 @@ public class Rating {
     private UUID toId;
 
     private Float score;
+
     private String comment;
-    
 }

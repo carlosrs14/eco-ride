@@ -21,5 +21,4 @@ public record RatingRequestDTO(
 
     @NotBlank(message = "Comment is required")
     String comment
-
 ){}
