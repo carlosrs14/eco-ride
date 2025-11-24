@@ -58,15 +58,17 @@ public class RatingServiceImpl implements RatingService {
         return Mono.zip(tripMono, driverMono, passengerMono)
                 .flatMap(result -> {
                     Rating rating = ratingMapper.toEntity(ratingRequestDTO);
+                    if (rating == null) throw new NullPointerException();
+
                     return ratingRepositoy.save(rating);
                 })
                 .map(ratingMapper::toDto);
-
     }
 
     @Override
     public Mono<RatingResponseDTO> findById(@NonNull String id) {
         UUID uuid = UUID.fromString(id);
+        if (uuid == null) throw new NullPointerException();
 
         return ratingRepositoy.findById(uuid)
                 .switchIfEmpty(
@@ -78,6 +80,7 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public Mono<RatingResponseDTO> update(String id, RatingRequestUpdateDTO ratingRequestUpdateDTO) {
         UUID uuid = UUID.fromString(id);
+        if (uuid == null) throw new NullPointerException();
 
         return ratingRepositoy.findById(uuid)
                 .switchIfEmpty(
@@ -91,13 +94,11 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public Flux<RatingResponseDTO> findAllByPassengerId(String passengerId) {
-        
         UUID uuid = UUID.fromString(passengerId);
 
         return ratingRepositoy.findAllByFromId(uuid)
                 .switchIfEmpty(Flux.error(new ResourceNotFoundException("ratings", "allByid", passengerId)))
                 .map(ratingMapper::toDto);
-
     }
 
     @Override 

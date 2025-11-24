@@ -1,6 +1,9 @@
 spring:
   application:
     name: api-gateway
+
   config:
+    activate:
+      on-profile: "!test"
     import: configserver:http://config-server:${CONFIG_SERVER_PORT}
 
