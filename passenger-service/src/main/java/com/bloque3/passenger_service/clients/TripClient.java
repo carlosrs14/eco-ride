@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.bloque3.passenger_service.clients.dto.TripResponseDTO;
 
 
-@FeignClient(name = "trip-service",url = "http://trip-service:8082/api/v1")
+@FeignClient(name = "trip-service",path = "/api/v1")
 public interface TripClient {
 
-    @GetMapping("trips/{id}")
+    @GetMapping("/trips/{id}")
     TripResponseDTO getTripById(@PathVariable String id);
 
 }

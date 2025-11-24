@@ -97,8 +97,10 @@ services:
       SPRING_FLYWAY_URL: jdbc:postgresql://passengers-db:${PASSENGER_DB_PORT}/${PASSENGER_DB_NAME}
       SPRING_FLYWAY_USER: ${PASSENGER_DB_USER}
       SPRING_FLYWAY_PASSWORD: ${PASSENGER_DB_PASS}
+      EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
     depends_on:
       - config-server
+      - eureka-server
       - passengers-db
 
   rabbit-mq:
