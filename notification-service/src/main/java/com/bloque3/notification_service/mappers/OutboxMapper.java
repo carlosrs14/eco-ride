@@ -12,6 +12,7 @@ public interface OutboxMapper {
     OutboxResponse toDto(Outbox outbox);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "retries", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Outbox toEntity(OutboxRequest outboxRequest);

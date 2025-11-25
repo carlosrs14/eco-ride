@@ -2,7 +2,6 @@ package com.bloque3.notification_service.controllers.request;
 
 import java.util.Map;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,10 +15,6 @@ public record OutboxRequest(
     Map<String, Object> payload,
     
     @NotBlank(message = "Status id is required")
-    String statusId,
-    
-    @NotNull(message = "retries is required")
-    @Min(value = 0, message = "Retries must be positive")
-    Integer retries
+    String statusId
 
 ) {}
