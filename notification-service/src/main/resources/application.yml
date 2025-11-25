@@ -3,3 +3,4 @@ spring:
     name: notification-service
   config:
    import: configserver:http://config-server:${CONFIG_SERVER_PORT}
+
