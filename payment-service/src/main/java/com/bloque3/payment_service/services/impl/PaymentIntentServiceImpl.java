@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.bloque3.payment_service.clients.TripClient;
 import com.bloque3.payment_service.controllers.dtos.request.PaymentIntentRequestDTO;
 import com.bloque3.payment_service.controllers.dtos.response.PaymentIntentResponseDTO;
 import com.bloque3.payment_service.exception.ResourceNotFoundException;
@@ -15,37 +16,46 @@ import com.bloque3.payment_service.services.PaymentIntentService;
 
 import lombok.NonNull;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
-public class PaymentIntentServiceImpl implements PaymentIntentService{
+public class PaymentIntentServiceImpl implements PaymentIntentService {
 
-    private final PaymentIntentRepository paymentIntentRepository;
+  private final PaymentIntentRepository paymentIntentRepository;
   private final PaymentIntentMapper paymentIntentMapper;
+  private final TripClient tripClient;
 
   public PaymentIntentServiceImpl(PaymentIntentMapper paymentIntentMapper,
-      PaymentIntentRepository paymentIntentRepository) {
+      PaymentIntentRepository paymentIntentRepository, TripClient tripClient) {
     this.paymentIntentMapper = paymentIntentMapper;
     this.paymentIntentRepository = paymentIntentRepository;
+    this.tripClient = tripClient;
   }
 
   @Override
   public Mono<PaymentIntentResponseDTO> create(PaymentIntentRequestDTO paymentIntentRequest) {
-    PaymentIntent paymentIntent = paymentIntentMapper.toEntity(paymentIntentRequest);
-    paymentIntent.setStatus(5);
-    paymentIntent.setCreatedAt(Instant.now());
-    paymentIntent.setUpdatedAt(Instant.now());
 
-    return paymentIntentRepository.save(paymentIntent).map(paymentIntentMapper::toDto);
+    return Mono.fromCallable(() -> tripClient.getReservationById(paymentIntentRequest.reservationId()))
+            .subscribeOn(Schedulers.boundedElastic())
+            .flatMap(reserva -> {
+
+                PaymentIntent paymentIntent = paymentIntentMapper.toEntity(paymentIntentRequest);
+                paymentIntent.setStatus(5);
+                paymentIntent.setCreatedAt(Instant.now());
+                paymentIntent.setUpdatedAt(Instant.now());
+
+                return paymentIntentRepository.save(paymentIntent);
+            })
+            .map(paymentIntentMapper::toDto);
   }
 
   @Override
-  public Mono<PaymentIntentResponseDTO> updateStatus(@NonNull String id,@NonNull Integer statusId) {
+  public Mono<PaymentIntentResponseDTO> updateStatus(@NonNull String id, @NonNull Integer statusId) {
 
     UUID uuid = UUID.fromString(id);
     return paymentIntentRepository.findByIdAndIsActiveTrue(uuid)
         .switchIfEmpty(
-          Mono.error(new ResourceNotFoundException("payment", "id", id))
-        )
+            Mono.error(new ResourceNotFoundException("payment", "id", id)))
         .flatMap(existingPaymentIntent -> {
           PaymentIntent paymentIntent = PaymentIntent.builder()
               .id(uuid)
@@ -54,7 +64,7 @@ public class PaymentIntentServiceImpl implements PaymentIntentService{
               .build();
           return paymentIntentRepository.save(paymentIntent).map(paymentIntentMapper::toDto);
         });
-    
+
   }
 
   @Override
@@ -62,8 +72,7 @@ public class PaymentIntentServiceImpl implements PaymentIntentService{
     UUID uuid = UUID.fromString(id);
     return paymentIntentRepository.findByIdAndIsActiveTrue(uuid)
         .switchIfEmpty(
-          Mono.error(new ResourceNotFoundException("payment", "id", uuid))
-        )
+            Mono.error(new ResourceNotFoundException("payment", "id", uuid)))
         .map(paymentIntentMapper::toDto);
   }
 

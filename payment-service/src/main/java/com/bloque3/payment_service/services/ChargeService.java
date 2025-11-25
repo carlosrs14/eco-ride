@@ -8,5 +8,6 @@ import reactor.core.publisher.Mono;
 public interface ChargeService {
 
     Mono<ChargeResponseDTO> create(String PaymentIntentId, ChargeRequestDTO chargeRequest);
+    Mono<ChargeResponseDTO> findById(String id);
     
 }

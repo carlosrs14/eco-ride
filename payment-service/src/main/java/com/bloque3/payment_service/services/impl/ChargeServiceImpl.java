@@ -11,7 +11,6 @@ import com.bloque3.payment_service.exception.ResourceNotFoundException;
 import com.bloque3.payment_service.mappers.ChargeMapper;
 import com.bloque3.payment_service.models.Charge;
 import com.bloque3.payment_service.repositories.ChargeRepository;
-import com.bloque3.payment_service.repositories.PaymentIntentRepository;
 import com.bloque3.payment_service.services.ChargeService;
 import com.bloque3.payment_service.services.PaymentIntentService;
 
@@ -41,5 +40,15 @@ public class ChargeServiceImpl implements ChargeService {
             charge.setIsActive(true);
             return chargeRepository.save(charge).map(chargeMapper::toDto);
             });
+    }
+
+    @Override
+    public Mono<ChargeResponseDTO> findById(String id) {
+        UUID uuid = UUID.fromString(id);
+        return chargeRepository.findByIdAndIsActiveTrue(uuid)
+            .switchIfEmpty(
+            Mono.error(new ResourceNotFoundException("charge", "id", uuid))
+            )
+            .map(chargeMapper::toDto);
     }
 }
