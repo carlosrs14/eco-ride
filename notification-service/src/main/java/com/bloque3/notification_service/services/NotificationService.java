@@ -5,5 +5,5 @@ import java.util.Map;
 import reactor.core.publisher.Mono;
 
 public interface NotificationService {
-    Mono<Void> notify(String templateCode, String to, Map<String, Object> params);
+    Mono<Void> notify(String type, String templateCode, String to, Map<String, Object> params);
 }

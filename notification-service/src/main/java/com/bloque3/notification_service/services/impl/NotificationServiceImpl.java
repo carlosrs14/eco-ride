@@ -10,6 +10,7 @@ import com.bloque3.notification_service.repositories.StatusRepository;
 import com.bloque3.notification_service.services.NotificationService;
 import com.bloque3.notification_service.services.OutboxService;
 import com.bloque3.notification_service.services.TemplateService;
+import com.bloque3.notification_service.utils.message_handler.MessageHandler;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -23,8 +24,12 @@ public class NotificationServiceImpl implements NotificationService{
     private final EventTypeRepository eventTypeRepository;
     private final StatusRepository statusRepository;
 
+    private final Map<String, MessageHandler> handlersMap;
+
     @Override
-    public Mono<Void> notify(String templateCode, String to, Map<String, Object> params) {
+    public Mono<Void> notify(String type, String templateCode, String to, Map<String, Object> params) {
+        MessageHandler handler = handlersMap.get(type.toLowerCase());
+
         return templateService.findByCode(templateCode)
             .flatMap(template -> {
                 String body = replaceParams(template.body(), params);
@@ -36,7 +41,7 @@ public class NotificationServiceImpl implements NotificationService{
                     "body", body
                 );
 
-                return eventTypeRepository.findByName("NOTIFICACION")
+                return eventTypeRepository.findByName("NOTIFICATION")
                     .flatMap(eventType ->
                         statusRepository.findByName("PENDING")
                             .flatMap(status ->
@@ -44,15 +49,16 @@ public class NotificationServiceImpl implements NotificationService{
                                     new OutboxRequest(
                                         eventType.getId().toString(),
                                         payload,
-                                        status.getId().toString(),
-                                        0 
+                                        status.getId().toString()
                                     )
                                 )
                             )
-                    );
+                    )
+                    .flatMap(outbox -> handler.send(subject, body, to));
             })
             .then();
     }
+
 
 
     private String replaceParams(String text, Map<String, Object> params) {
@@ -62,7 +68,5 @@ public class NotificationServiceImpl implements NotificationService{
         }
         return result;
     }
-
-    
     
 }
