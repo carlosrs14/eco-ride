@@ -145,6 +145,35 @@ services:
       - branch-passenger
       - default
 
+  payment-service:
+    build:
+      context: .
+      dockerfile: ./payment-service/Dockerfile
+    container_name: payment-service
+    environment:
+      SERVER_PORT: ${PAYMENT_SERVICE_PORT}
+      CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
+      SPRING_R2DBC_URL: r2dbc:postgresql://payments-db:${PAYMENTS_DB_PORT}/${PAYMENTS_DB_NAME}
+      SPRING_R2DBC_USERNAME: ${PAYMENTS_DB_USER}
+      SPRING_R2DBC_PASSWORD: ${PAYMENTS_DB_PASS}
+      SPRING_FLYWAY_URL: jdbc:postgresql://payments-db:${PAYMENTS_DB_PORT}/${PAYMENTS_DB_NAME}
+      SPRING_FLYWAY_USER: ${PAYMENTS_DB_USER}
+      SPRING_FLYWAY_PASSWORD: ${PAYMENTS_DB_PASS}
+      EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
+      RABBIT_MQ_HOST: ${RABBIT_MQ_HOST}
+      RABBIT_MQ_PORT: ${RABBIT_MQ_PORT_AMQP}
+      RABBIT_MQ_USER: ${RABBIT_MQ_USER}
+      RABBIT_MQ_PASS: ${RABBIT_MQ_PASS}
+
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      trips-db:
+        condition: service_started
+    profiles:
+      - payment-trip
+      - default
+    
   rabbit-mq:
     container_name: ${RABBIT_MQ_HOST}
     image: rabbitmq:3-management
@@ -187,6 +216,19 @@ services:
       - branch-trip
       - default
 
+  payments-db:
+    container_name: ${PAYMENTS_DB_NAME}
+    image: ${PAYMENTS_DB_IMAGE}
+    environment:
+      POSTGRES_USER: ${PAYMENTS_DB_USER}
+      POSTGRES_PASSWORD: ${PAYMENTS_DB_PASS}
+      POSTGRES_DB: ${PAYMENTS_DB_NAME}
+    volumes:
+      - payments-data:/var/lib/postgresql/data
+    profiles:
+      - branch-payment
+      - default
+
   passengers-db:
     container_name: ${PASSENGER_DB_NAME}
     image: ${PASSENGER_DB_IMAGE}
@@ -199,6 +241,7 @@ services:
     profiles:
       - branch-passenger
       - default
+  
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -214,7 +257,6 @@ services:
       KC_DB_PASSWORD: ${KC_DB_PASS}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
-      KC_HOSTNAME: keycloak
       KC_HOSTNAME_PORT: ${KC_PORT}
       KC_HOSTNAME_STRICT: 'false'
     volumes:
@@ -228,6 +270,7 @@ services:
       - branch-car
       - branch-trip
       - branch-passenger
+      - branch-payment
       - default
 
   keycloak-db:
@@ -246,12 +289,14 @@ services:
       - branch-car
       - branch-trip
       - branch-passenger
+      - branch-payment
       - default
 
 volumes:
   keycloak-data:
   cars-data:
   passengers-data:
+  payments-data:
   trips-data:
   grafana-data:
   loki-data:
