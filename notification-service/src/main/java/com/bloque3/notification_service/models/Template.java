@@ -20,7 +20,7 @@ public class Template {
     private String code;
     
     @Column("channel_id")
-    private String channelId;
+    private UUID channelId;
     
     private String subject;
     

@@ -12,7 +12,7 @@ import com.bloque3.notification_service.controllers.request.TemplateRequest;
 import com.bloque3.notification_service.controllers.response.TemplateResponse;
 import com.bloque3.notification_service.services.TemplateService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 import reactor.core.publisher.Mono;
 
