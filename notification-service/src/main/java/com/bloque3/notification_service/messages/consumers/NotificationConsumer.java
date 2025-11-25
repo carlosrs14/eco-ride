@@ -21,7 +21,7 @@ public class NotificationConsumer {
     public Consumer<NotificationEvent> notificationRequest(){
         return event ->{
             System.out.println("Recibido");
-            notificationService.notify(event.templateCode(), event.to(), event.params());
+            notificationService.notify("smtp", event.templateCode(), event.to(), event.params());
         };
     }
 }
