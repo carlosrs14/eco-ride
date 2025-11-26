@@ -16,6 +16,8 @@
 
 
     <modules>
+        <module>notification-service</module>
+        <module>payment-service</module>
         <module>api-gateway</module>
         <module>eureka-server</module>
         <module>car-service</module>

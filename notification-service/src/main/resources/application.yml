@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: notification-service
+  config:
+    activate:
+      on-profile: "!test"
+    import: configserver:http://config-server:${CONFIG_SERVER_PORT}
+

@@ -62,6 +62,7 @@ public class PaymentIntentServiceImpl implements PaymentIntentService {
               .status(statusId)
               .updatedAt(Instant.now())
               .build();
+          if (paymentIntent == null) throw new NullPointerException("Payment intent is null");
           return paymentIntentRepository.save(paymentIntent).map(paymentIntentMapper::toDto);
         });
 

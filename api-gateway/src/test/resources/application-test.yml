@@ -7,3 +7,7 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://example.com/.well-known/jwks.json
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
