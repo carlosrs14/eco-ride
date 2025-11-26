@@ -4,18 +4,40 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: keycloak-token
+          uri: http://keycloak:${KEYCLOACK_PORT}
+          predicates:
+            - Path=/api/v1/auth/login
+          filters:
+            - RewritePath=/api/v1/auth/login,/realms/ecoride/protocol/openid-connect/token
+            - AddRequestHeader=Content-Type,application/x-www-form-urlencoded
+
+        - id: passenger-register
+          uri: lb://passenger-service
+          predicates:
+            - Path=/api/v1/auth/register
+          filters:
+            - StripPrefix=0
+
         - id: car
           uri: lb://car-service
           predicates: 
             - Path=/api/v1/cars/**
+
         - id: trip
           uri: lb://trip-service
           predicates:
             - Path=/api/v1/trips/**
+
         - id: passenger
           uri: lb://passenger-service
           predicates:
             - Path=/api/v1/passengers/**
+
+        - id: payment
+          uri: lib://payment-service
+          predicates:
+            - Path=/api/v1/payments/**
 
   security:
     oauth2:
