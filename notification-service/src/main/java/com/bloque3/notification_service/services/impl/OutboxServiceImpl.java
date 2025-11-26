@@ -36,6 +36,7 @@ public class OutboxServiceImpl implements OutboxService {
     @Override
     public Mono<OutboxResponse> updateStatus(@NonNull String id, String statusId) {
         UUID uuid = UUID.fromString(id);
+        if (uuid == null) throw new NullPointerException("UUID is null");
 
         return outboxRepository.findById(uuid)
             .switchIfEmpty(
@@ -52,6 +53,7 @@ public class OutboxServiceImpl implements OutboxService {
     @Override
     public Mono<OutboxResponse> incrementRetries(@NonNull String id) {
         UUID uuid = UUID.fromString(id);
+        if (uuid == null) throw new NullPointerException("UUID is null");
 
         return outboxRepository.findById(uuid)
             .switchIfEmpty(

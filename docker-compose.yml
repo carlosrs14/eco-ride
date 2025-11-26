@@ -181,8 +181,8 @@ services:
     
   notification-service:
     build:
-      context: ./notification-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./notification-service/Dockerfile
     container_name: notification-service
     environment:
       SERVER_PORT: ${NOTIFICATION_SERVICE_PORT}
