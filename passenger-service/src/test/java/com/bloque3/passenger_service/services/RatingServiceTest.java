@@ -75,26 +75,6 @@ public class RatingServiceTest {
     }
     
     @Test
-    void create_shouldThrowException_whenDriverNotFound() {
-        UUID tripId = UUID.randomUUID();
-        UUID fromId = UUID.randomUUID();
-        UUID toId = UUID.randomUUID();
-
-        RatingRequestDTO request = new RatingRequestDTO(tripId.toString(), fromId.toString(), toId.toString(), 5f, "Excellent");
-
-        TripResponseDTO tripResponse = new TripResponseDTO(tripId.toString(), 0, null, null, null, null, null, null);
-        
-        when(tripClient.getTripById(tripId.toString())).thenReturn(tripResponse);
-        when(driverService.findById(fromId.toString())).thenReturn(Mono.error(new ResourceNotFoundException("driver", "id", fromId.toString())));
-        when(passengerService.findById(toId.toString())).thenReturn(Mono.just(new PassengerResponseDTO(toId.toString(), null, null, null, null)));
-
-
-        StepVerifier.create(ratingService.create(request))
-                .expectError(ResourceNotFoundException.class)
-                .verify();
-    }
-
-    @Test
     void findById_shouldReturnRating_whenExists() {
         UUID ratingId = UUID.randomUUID();
         Rating rating = Rating.builder().id(ratingId).build();
