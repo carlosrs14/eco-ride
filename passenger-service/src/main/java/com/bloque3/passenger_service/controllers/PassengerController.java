@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/v1/passengers")
 @RequiredArgsConstructor
 public class PassengerController {
-    
     private final PassengerService passengerService;
-
-    @PostMapping("")
-    public Mono<PassengerResponseDTO> create(@Valid @RequestBody PassengerRequestDTO passengerRequestDTO) {
-        return passengerService.create(passengerRequestDTO);
-    }
 
     @GetMapping("")
     public Flux<PassengerResponseDTO> findAll() {

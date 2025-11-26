@@ -11,32 +11,36 @@ import com.bloque3.passenger_service.exceptions.ResourceNotFoundException;
 import com.bloque3.passenger_service.mappers.PassengerMapper;
 import com.bloque3.passenger_service.models.Passenger;
 import com.bloque3.passenger_service.repositories.PassengerRepository;
+import com.bloque3.passenger_service.services.KeycloakService;
 import com.bloque3.passenger_service.services.PassengerService;
 
 import jakarta.validation.Valid;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class PassengerServiceImpl implements PassengerService{
+@RequiredArgsConstructor
+public class PassengerServiceImpl implements PassengerService {
 
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
+    private final KeycloakService keycloakService;
 
-    public PassengerServiceImpl(PassengerRepository passengerRepository, PassengerMapper passengerMapper) {
-        this.passengerRepository = passengerRepository;
-        this.passengerMapper = passengerMapper;
-    }
-    
-   
     @Override
     public Mono<PassengerResponseDTO> create(@Valid PassengerRequestDTO passengerRequestDTO) {
         Passenger passenger = passengerMapper.toEntity(passengerRequestDTO);
         passenger.setIsActive(true);
         passenger.setCreatedAt(Instant.now());
         passenger.setUpdatedAt(Instant.now());
-        return passengerRepository.save(passenger).map(passengerMapper::toDto);
+
+        return keycloakService.createuser(passengerRequestDTO)
+        .flatMap(keycloakSub -> {
+            passenger.setKeycloakSub(keycloakSub);
+            return passengerRepository.save(passenger);
+        })
+        .map(passengerMapper::toDto);
 
     }
 
@@ -74,15 +78,14 @@ public class PassengerServiceImpl implements PassengerService{
     public Mono<Void> delete(@NonNull String id) {
         UUID uuid = UUID.fromString(id);
         return passengerRepository.findByIdAndIsActiveTrue(uuid)
-                .switchIfEmpty(
-                    Mono.error(new ResourceNotFoundException("passenger", "id", id))
-                )
-                .flatMap(passen ->{
-                    passen.setIsActive(false);
-                    passen.setUpdatedAt(Instant.now());
-                    return passengerRepository.save(passen);
-
-                }).then();
+            .switchIfEmpty(
+                Mono.error(new ResourceNotFoundException("passenger", "id", id))
+            )
+            .flatMap(passen ->{
+                passen.setIsActive(false);
+                passen.setUpdatedAt(Instant.now());
+                return passengerRepository.save(passen);
+            }).then();
     }
 
     @Override
@@ -91,9 +94,7 @@ public class PassengerServiceImpl implements PassengerService{
         .switchIfEmpty(
             Mono.error(new ResourceNotFoundException("passenger", "keycloakSub", keycloakSub))
         )
-        .map(
-            passengerMapper::toDto
-        );
+        .map(passengerMapper::toDto);
     }
 
 
@@ -101,9 +102,7 @@ public class PassengerServiceImpl implements PassengerService{
     public Flux<PassengerResponseDTO> findAll() {
         return passengerRepository.findAllByIsActiveTrue()
         .switchIfEmpty(Flux.error(new ResourceNotFoundException("Passenger", "all", null)))
-        .map(
-            passengerMapper::toDto
-        );
+        .map(passengerMapper::toDto);
     }
 
 }

@@ -140,6 +140,10 @@ services:
       SPRING_FLYWAY_USER: ${PASSENGERS_DB_USER}
       SPRING_FLYWAY_PASSWORD: ${PASSENGERS_DB_PASS}
       EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
+      KEYCLOAK_PORT: ${KC_PORT}
+      KEYCLOAK_ADMIN_SECRET: ${KEYCLOAK_ADMIN_SECRET}
+      ADMIN_CLIENT_ID: ${ADMIN_CLIENT_ID}
+      ADMIN_REALM: ${ADMIN_REALM}
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -175,8 +179,6 @@ services:
         condition: service_healthy
       trips-db:
         condition: service_started
-      config-server:
-        condition: service_healthy
       rabbit-mq:
         condition: service_started
     profiles:
@@ -287,8 +289,6 @@ services:
   notification-db:
     container_name: ${NOTIFICATIONS_DB_NAME}
     image: ${NOTIFICATIONS_DB_IMAGE}
-    ports:
-      - "5435:5432"
     environment:
       POSTGRES_USER: ${NOTIFICATIONS_DB_USER}
       POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASS}
@@ -329,8 +329,6 @@ services:
   keycloak-db:
     image: postgres:15
     container_name: keycloak-db
-    ports:
-      - "${KC_DB_PORT}:${KC_DB_PORT}"
     environment:
       POSTGRES_DB: ${KC_DB_NAME}
       POSTGRES_USER: ${KC_DB_USER}
