@@ -15,5 +15,6 @@ public interface TemplateMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "isNew", ignore = true)
     Template toEntity(TemplateRequest templateRequest);
 }

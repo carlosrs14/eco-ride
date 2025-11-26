@@ -1,0 +1,41 @@
+DROP TABLE IF EXISTS channels CASCADE;
+DROP TABLE IF EXISTS templates CASCADE;
+DROP TABLE IF EXISTS event_types CASCADE;
+DROP TABLE IF EXISTS status CASCADE;
+DROP TABLE IF EXISTS outboxes CASCADE;
+
+CREATE TABLE channels (
+    id UUID PRIMARY KEY,
+    name VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE templates (
+    id UUID PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    channel_id UUID NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    is_active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE event_types (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE status (
+    id UUID PRIMARY KEY,
+    name VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE outboxes (
+    id UUID PRIMARY KEY,
+    event_type_id UUID NOT NULL,
+    payload JSON NOT NULL,
+    status_id UUID NOT NULL,
+    retries INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);

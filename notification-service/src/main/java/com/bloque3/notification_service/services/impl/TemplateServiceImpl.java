@@ -41,13 +41,13 @@ public class TemplateServiceImpl implements TemplateService{
 
     @Override
     public Mono<TemplateResponse> findById(@NonNull String id) {
-        UUID uuid = UUID.fromString(id);
-        return templateRepository.findActiveById(uuid)
-            .switchIfEmpty(
-                Mono.error(new ResourceNotFoundException("template", "id", id))
-            )
-            .map(templateMapper::toDto);
-
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> templateRepository.findActiveById(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("template", "id", id))
+                )
+                .map(templateMapper::toDto));
     }
     
     @Override
@@ -61,33 +61,35 @@ public class TemplateServiceImpl implements TemplateService{
 
     @Override
     public Mono<TemplateResponse> update(@NonNull String id, TemplateRequest templateRequest) {
-        UUID uuid = UUID.fromString(id);
-        return templateRepository.findActiveById(uuid)
-            .switchIfEmpty(
-                Mono.error(new ResourceNotFoundException("template", "id", id))
-            )
-            .flatMap(existingTemplate -> {
-                Template template = templateMapper.toEntity(templateRequest);
-                template.setId(uuid);
-                template.setUpdatedAt(Instant.now());
-                return templateRepository.save(template);
-            })
-            .map(templateMapper::toDto);
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> templateRepository.findActiveById(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("template", "id", id))
+                )
+                .flatMap(existingTemplate -> {
+                    Template template = templateMapper.toEntity(templateRequest);
+                    template.setId(uuid);
+                    template.setUpdatedAt(Instant.now());
+                    return templateRepository.save(template);
+                })
+                .map(templateMapper::toDto));
     }
 
     @Override
     public Mono<Void> delete(@NonNull String id) {
-        UUID uuid = UUID.fromString(id);
-        return templateRepository.findActiveById(uuid)
-            .switchIfEmpty(
-                Mono.error(new ResourceNotFoundException("template", "id", id))
-            )
-            .flatMap(template -> {
-                template.setIsActive(false);
-                template.setUpdatedAt(Instant.now());
-                return templateRepository.save(template);
-            })
-            .then();
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> templateRepository.findActiveById(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("template", "id", id))
+                )
+                .flatMap(template -> {
+                    template.setIsActive(false);
+                    template.setUpdatedAt(Instant.now());
+                    return templateRepository.save(template);
+                })
+                .then());
     }
     
 }

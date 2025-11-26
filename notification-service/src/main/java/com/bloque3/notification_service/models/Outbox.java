@@ -1,10 +1,11 @@
 package com.bloque3.notification_service.models;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -14,14 +15,14 @@ import lombok.Data;
 @Data
 @Builder
 @Table("outboxes")
-public class Outbox {
+public class Outbox implements Persistable<UUID> {
     @Id
     private UUID id;
     
     @Column("event_type_id")
     private String eventTypeId;
 
-    private Map<String, Object> payload;
+    private String payload;
     
     @Column("status_id")
     private String statusId;
@@ -33,4 +34,12 @@ public class Outbox {
     
     @Column("updated_at")
     private Instant updatedAt;
+
+    @Transient
+    private boolean isNew;
+
+    @Override
+    public boolean isNew() {
+        return this.isNew || id == null;
+    }
 }
