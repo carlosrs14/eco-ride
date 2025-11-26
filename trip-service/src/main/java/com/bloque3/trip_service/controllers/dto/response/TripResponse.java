@@ -1,10 +1,12 @@
 package com.bloque3.trip_service.controllers.dto.response;
 
+import java.math.BigDecimal;
+
 public record TripResponse(
     String id,
     Integer availableSeats,
     String startTime,
-    Double pricePerSeat,
+    BigDecimal pricePerSeat,
     String originId,
     String destinationId,
     String driverId,

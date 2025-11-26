@@ -1,4 +1,4 @@
-package com.bloque3.passenger_service.controllers.dtos.ratingDtos.response;
+package com.bloque3.passenger_service.controllers.dtos.response;
 
 
 public record RatingResponseDTO(

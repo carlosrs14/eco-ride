@@ -3,11 +3,12 @@ package com.bloque3.passenger_service.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.request.PassengerRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.response.PassengerResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.PassengerRequestDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.PassengerResponseDTO;
 import com.bloque3.passenger_service.services.PassengerService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,18 +19,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
-
-
 @RestController
 @RequestMapping("/api/v1/passengers")
+@RequiredArgsConstructor
 public class PassengerController {
     
     private final PassengerService passengerService;
-
-    public PassengerController(PassengerService passengerService) {
-        this.passengerService = passengerService;
-    }
 
     @PostMapping("")
     public Mono<PassengerResponseDTO> create(@Valid @RequestBody PassengerRequestDTO passengerRequestDTO) {

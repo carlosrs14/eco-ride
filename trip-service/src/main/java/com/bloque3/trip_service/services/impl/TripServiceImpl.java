@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.bloque3.trip_service.clients.CarClient;
 import com.bloque3.trip_service.clients.DriverClient;
-import com.bloque3.trip_service.clients.dtos.CarResponse;
-import com.bloque3.trip_service.clients.dtos.DriverResponse;
+import com.bloque3.trip_service.clients.dto.CarResponse;
+import com.bloque3.trip_service.clients.dto.DriverResponse;
 import com.bloque3.trip_service.controllers.dto.request.TripRequest;
 import com.bloque3.trip_service.controllers.dto.response.LocationResponse;
 import com.bloque3.trip_service.controllers.dto.response.TripResponse;
@@ -20,11 +20,13 @@ import com.bloque3.trip_service.repositories.TripRepository;
 import com.bloque3.trip_service.services.LocationService;
 import com.bloque3.trip_service.services.TripService;
 
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Service
+@RequiredArgsConstructor
 public class TripServiceImpl implements TripService {
     private final DriverClient driverClient;
     private final CarClient carClient;
@@ -32,18 +34,10 @@ public class TripServiceImpl implements TripService {
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;
 
-    public TripServiceImpl(TripRepository tripRepository, TripMapper tripMapper, DriverClient driverClient, CarClient carClient, LocationService locationService) {
-        this.tripRepository = tripRepository;
-        this.tripMapper = tripMapper;
-        this.carClient = carClient;
-        this.locationService = locationService;
-        this.driverClient = driverClient;
-    }
-
     @Override
     public Mono<TripResponse> create(TripRequest tripRequest) {
         Mono<CarResponse> carResponseMono = Mono.fromCallable(() ->carClient.getCarById(tripRequest.carId()))
-                    .subscribeOn(Schedulers.boundedElastic()  )
+                    .subscribeOn(Schedulers.boundedElastic())
                     .switchIfEmpty(Mono.error(new ResourceNotFoundException("car", "id", tripRequest.carId())));
 
         Mono<DriverResponse> driverResponseMono = Mono.fromCallable(() ->driverClient.getDriverById(tripRequest.driverId()))

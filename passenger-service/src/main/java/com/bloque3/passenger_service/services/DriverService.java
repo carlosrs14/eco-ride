@@ -1,8 +1,8 @@
 package com.bloque3.passenger_service.services;
 
-import com.bloque3.passenger_service.controllers.dtos.driverDtos.request.DriverRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.driverDtos.request.DriverRequestUpdateDTO;
-import com.bloque3.passenger_service.controllers.dtos.driverDtos.response.DriverResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.DriverResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.DriverRequestDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.DriverRequestUpdateDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

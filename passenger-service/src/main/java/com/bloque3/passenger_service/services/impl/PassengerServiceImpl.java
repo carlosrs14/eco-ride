@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.request.PassengerRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.response.PassengerResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.PassengerResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.PassengerRequestDTO;
 import com.bloque3.passenger_service.exceptions.ResourceNotFoundException;
 import com.bloque3.passenger_service.mappers.PassengerMapper;
 import com.bloque3.passenger_service.models.Passenger;

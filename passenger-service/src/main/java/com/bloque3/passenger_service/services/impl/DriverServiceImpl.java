@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.bloque3.passenger_service.controllers.dtos.driverDtos.request.DriverRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.driverDtos.request.DriverRequestUpdateDTO;
-import com.bloque3.passenger_service.controllers.dtos.driverDtos.response.DriverResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.DriverResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.DriverRequestDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.DriverRequestUpdateDTO;
 import com.bloque3.passenger_service.exceptions.ResourceNotFoundException;
 import com.bloque3.passenger_service.mappers.DriverMapper;
 import com.bloque3.passenger_service.models.Driver;

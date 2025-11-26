@@ -1,4 +1,4 @@
-package com.bloque3.passenger_service.controllers.dtos.driverDtos.request;
+package com.bloque3.passenger_service.controllers.dtos.request;
 
 import jakarta.validation.constraints.NotBlank;
 

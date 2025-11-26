@@ -1,5 +1,6 @@
 package com.bloque3.trip_service.controllers.dto.request;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 import jakarta.validation.constraints.Future;
@@ -17,7 +18,7 @@ public record TripRequest(
     Instant startTime,
 
     @NotNull(message = "Price per seat is required")
-    Double pricePerSeat,
+    BigDecimal pricePerSeat,
 
     @NotBlank(message = "Origin ID is required")
     String originId,

@@ -1,4 +1,4 @@
-package com.bloque3.trip_service.clients.dtos;
+package com.bloque3.trip_service.clients.dto;
 
 public record CarResponse(
     String id,
