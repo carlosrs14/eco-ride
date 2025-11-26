@@ -1,7 +1,7 @@
 package com.bloque3.passenger_service.services;
 
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.request.PassengerRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.response.PassengerResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.PassengerResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.PassengerRequestDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

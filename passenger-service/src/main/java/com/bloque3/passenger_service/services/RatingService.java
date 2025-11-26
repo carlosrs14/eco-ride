@@ -1,8 +1,8 @@
 package com.bloque3.passenger_service.services;
 
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.request.RatingRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.request.RatingRequestUpdateDTO;
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.response.RatingResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.RatingRequestDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.RatingRequestUpdateDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.RatingResponseDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

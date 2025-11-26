@@ -3,9 +3,9 @@ package com.bloque3.passenger_service.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.request.RatingRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.request.RatingRequestUpdateDTO;
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.response.RatingResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.RatingRequestDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.RatingRequestUpdateDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.RatingResponseDTO;
 import com.bloque3.passenger_service.models.Rating;
 
 @Mapper(componentModel = "spring")

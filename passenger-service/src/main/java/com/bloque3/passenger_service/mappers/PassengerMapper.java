@@ -3,8 +3,8 @@ package com.bloque3.passenger_service.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.request.PassengerRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.response.PassengerResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.PassengerResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.PassengerRequestDTO;
 import com.bloque3.passenger_service.models.Passenger;
 
 @Mapper(componentModel = "spring")

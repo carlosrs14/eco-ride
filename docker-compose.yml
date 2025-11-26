@@ -133,12 +133,12 @@ services:
     environment:
       SERVER_PORT: ${PASSENGER_SERVICE_PORT}
       CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
-      SPRING_R2DBC_URL: r2dbc:postgresql://passengers-db:${PASSENGER_DB_PORT}/${PASSENGER_DB_NAME}
-      SPRING_R2DBC_USERNAME: ${PASSENGER_DB_USER}
-      SPRING_R2DBC_PASSWORD: ${PASSENGER_DB_PASS}
-      SPRING_FLYWAY_URL: jdbc:postgresql://passengers-db:${PASSENGER_DB_PORT}/${PASSENGER_DB_NAME}
-      SPRING_FLYWAY_USER: ${PASSENGER_DB_USER}
-      SPRING_FLYWAY_PASSWORD: ${PASSENGER_DB_PASS}
+      SPRING_R2DBC_URL: r2dbc:postgresql://passengers-db:${PASSENGERS_DB_PORT}/${PASSENGERS_DB_NAME}
+      SPRING_R2DBC_USERNAME: ${PASSENGERS_DB_USER}
+      SPRING_R2DBC_PASSWORD: ${PASSENGERS_DB_PASS}
+      SPRING_FLYWAY_URL: jdbc:postgresql://passengers-db:${PASSENGERS_DB_PORT}/${PASSENGERS_DB_NAME}
+      SPRING_FLYWAY_USER: ${PASSENGERS_DB_USER}
+      SPRING_FLYWAY_PASSWORD: ${PASSENGERS_DB_PASS}
       EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
     depends_on:
       eureka-server:
@@ -191,12 +191,12 @@ services:
     environment:
       SERVER_PORT: ${NOTIFICATION_SERVICE_PORT}
       CONFIG_SERVER_PORT: ${CONFIG_SERVER_PORT}
-      SPRING_R2DBC_URL: r2dbc:postgresql://notification-db:${NOTIFICATION_DB_PORT}/${NOTIFICATION_DB_NAME}
-      SPRING_R2DBC_USERNAME: ${NOTIFICATION_DB_USER}
-      SPRING_R2DBC_PASSWORD: ${NOTIFICATION_DB_PASS}
-      SPRING_FLYWAY_URL: jdbc:postgresql://notification-db:${NOTIFICATION_DB_PORT}/${NOTIFICATION_DB_NAME}
-      SPRING_FLYWAY_USER: ${NOTIFICATION_DB_USER}
-      SPRING_FLYWAY_PASSWORD: ${NOTIFICATION_DB_PASS}
+      SPRING_R2DBC_URL: r2dbc:postgresql://notification-db:${NOTIFICATIONS_DB_PORT}/${NOTIFICATIONS_DB_NAME}
+      SPRING_R2DBC_USERNAME: ${NOTIFICATIONS_DB_USER}
+      SPRING_R2DBC_PASSWORD: ${NOTIFICATIONS_DB_PASS}
+      SPRING_FLYWAY_URL: jdbc:postgresql://notification-db:${NOTIFICATIONS_DB_PORT}/${NOTIFICATIONS_DB_NAME}
+      SPRING_FLYWAY_USER: ${NOTIFICATIONS_DB_USER}
+      SPRING_FLYWAY_PASSWORD: ${NOTIFICATIONS_DB_PASS}
       EUREKA_SERVER_PORT: ${EUREKA_SERVER_PORT}
       RABBT_MQ_HOST: ${RABBIT_MQ_HOST}
       RABBIT_MQ_PORT: ${RABBIT_MQ_PORT_AMQP}
@@ -271,12 +271,12 @@ services:
       - default
 
   passengers-db:
-    container_name: ${PASSENGER_DB_NAME}
-    image: ${PASSENGER_DB_IMAGE}
+    container_name: ${PASSENGERS_DB_NAME}
+    image: ${PASSENGERS_DB_IMAGE}
     environment:
-      POSTGRES_USER: ${PASSENGER_DB_USER}
-      POSTGRES_PASSWORD: ${PASSENGER_DB_PASS}
-      POSTGRES_DB: ${PASSENGER_DB_NAME}
+      POSTGRES_USER: ${PASSENGERS_DB_USER}
+      POSTGRES_PASSWORD: ${PASSENGERS_DB_PASS}
+      POSTGRES_DB: ${PASSENGERS_DB_NAME}
     volumes:
       - passengers-data:/var/lib/postgresql/data
     profiles:
@@ -285,16 +285,16 @@ services:
   
 
   notification-db:
-    container_name: ${NOTIFICATION_DB_NAME}
-    image: ${NOTIFICATION_DB_IMAGE}
+    container_name: ${NOTIFICATIONS_DB_NAME}
+    image: ${NOTIFICATIONS_DB_IMAGE}
     ports:
       - "5435:5432"
     environment:
-      POSTGRES_USER: ${NOTIFICATION_DB_USER}
-      POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASS}
-      POSTGRES_DB: ${NOTIFICATION_DB_NAME}
+      POSTGRES_USER: ${NOTIFICATIONS_DB_USER}
+      POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASS}
+      POSTGRES_DB: ${NOTIFICATIONS_DB_NAME}
     volumes:
-      - notification-data:/var/lib/postgresql/data
+      - notifications-data:/var/lib/postgresql/data
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -350,7 +350,7 @@ volumes:
   cars-data:
   passengers-data:
   payments-data:
-  notification-data:
+  notifications-data:
   trips-data:
   grafana-data:
   loki-data:

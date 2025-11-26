@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.bloque3.passenger_service.clients.TripClient;
 import com.bloque3.passenger_service.clients.dto.TripResponseDTO;
-import com.bloque3.passenger_service.controllers.dtos.driverDtos.response.DriverResponseDTO;
-import com.bloque3.passenger_service.controllers.dtos.passengerDtos.response.PassengerResponseDTO;
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.request.RatingRequestDTO;
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.request.RatingRequestUpdateDTO;
-import com.bloque3.passenger_service.controllers.dtos.ratingDtos.response.RatingResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.DriverResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.PassengerResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.response.RatingResponseDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.RatingRequestDTO;
+import com.bloque3.passenger_service.controllers.dtos.request.RatingRequestUpdateDTO;
 import com.bloque3.passenger_service.exceptions.ResourceNotFoundException;
 import com.bloque3.passenger_service.mappers.RatingMapper;
 import com.bloque3.passenger_service.models.Rating;

@@ -1,4 +1,4 @@
-package com.bloque3.passenger_service.controllers.dtos.driverDtos.response;
+package com.bloque3.passenger_service.controllers.dtos.response;
 
 public record DriverResponseDTO(
     String id,
