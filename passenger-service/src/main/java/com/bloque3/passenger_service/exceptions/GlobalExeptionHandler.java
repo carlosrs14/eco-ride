@@ -13,24 +13,24 @@ public class GlobalExeptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleResourceNotFound(ResourceNotFoundException ex, ServerWebExchange exchange) {
         ApiError apiError = ApiError.builder()
-                .status(HttpStatus.NOT_FOUND)
-                .error("Not Found")
-                .message(ex.getMessage())
-                .path(exchange.getRequest().getURI().getPath())
-                .timestamp(Instant.now())
-                .build();
+            .status(HttpStatus.NOT_FOUND)
+            .error("Not Found")
+            .message(ex.getMessage())
+            .path(exchange.getRequest().getURI().getPath())
+            .timestamp(Instant.now())
+            .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGoblaException(Exception ex, ServerWebExchange exchange) {
         ApiError apiError = ApiError.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .error("Internal Server Error")
-                .message(ex.getMessage())
-                .path(exchange.getRequest().getURI().getPath())
-                .timestamp(Instant.now())
-                .build();
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .error("Internal Server Error")
+            .message(ex.getMessage())
+            .path(exchange.getRequest().getURI().getPath())
+            .timestamp(Instant.now())
+            .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 
