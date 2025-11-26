@@ -97,17 +97,14 @@ public class RatingServiceImpl implements RatingService {
         UUID uuid = UUID.fromString(passengerId);
 
         return ratingRepositoy.findAllByFromId(uuid)
-                .switchIfEmpty(Flux.error(new ResourceNotFoundException("ratings", "allByid", passengerId)))
                 .map(ratingMapper::toDto);
     }
 
     @Override 
     public Flux<RatingResponseDTO> findAll() {
         return ratingRepositoy.findAll()
-        .switchIfEmpty(Flux.error(new ResourceNotFoundException("Ratings", "all", null)))
         .map(
             ratingMapper::toDto
         );
     }   
-
 }

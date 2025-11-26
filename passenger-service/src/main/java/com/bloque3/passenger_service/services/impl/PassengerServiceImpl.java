@@ -46,46 +46,47 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public Mono<PassengerResponseDTO> findById(@NonNull String id) {
-        UUID uuid = UUID.fromString(id);
-        return passengerRepository.findByIdAndIsActiveTrue(uuid)
-        .switchIfEmpty(
-            Mono.error(new ResourceNotFoundException("passenger", "id", id))
-        )
-        .map(
-            passengerMapper::toDto
-        );
-
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> passengerRepository.findByIdAndIsActiveTrue(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("passenger", "id", id))
+                )
+                .map(
+                    passengerMapper::toDto
+                ));
     }
 
     @Override
     public Mono<PassengerResponseDTO> update(@NonNull String id, PassengerRequestDTO passengerRequestDTO) {
-        UUID uuid = UUID.fromString(id);
-        return passengerRepository.findByIdAndIsActiveTrue(uuid)
-        .switchIfEmpty(
-            Mono.error(new ResourceNotFoundException("passenger", "id", id))
-        )
-        .flatMap(passen ->{
-            Passenger passenger = passengerMapper.toEntity(passengerRequestDTO);
-            passenger.setId(uuid);
-            passen.setUpdatedAt(Instant.now());
-            return passengerRepository.save(passen);
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> passengerRepository.findByIdAndIsActiveTrue(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("passenger", "id", id))
+                )
+                .flatMap(passen ->{
+                    Passenger passenger = passengerMapper.toEntity(passengerRequestDTO);
+                    passenger.setId(uuid);
+                    passen.setUpdatedAt(Instant.now());
+                    return passengerRepository.save(passen);
 
-        }).map(passengerMapper:: toDto);
-
+                }).map(passengerMapper:: toDto));
     }
 
     @Override
     public Mono<Void> delete(@NonNull String id) {
-        UUID uuid = UUID.fromString(id);
-        return passengerRepository.findByIdAndIsActiveTrue(uuid)
-            .switchIfEmpty(
-                Mono.error(new ResourceNotFoundException("passenger", "id", id))
-            )
-            .flatMap(passen ->{
-                passen.setIsActive(false);
-                passen.setUpdatedAt(Instant.now());
-                return passengerRepository.save(passen);
-            }).then();
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> passengerRepository.findByIdAndIsActiveTrue(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("passenger", "id", id))
+                )
+                .flatMap(passen ->{
+                    passen.setIsActive(false);
+                    passen.setUpdatedAt(Instant.now());
+                    return passengerRepository.save(passen);
+                }).then());
     }
 
     @Override
@@ -101,7 +102,6 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public Flux<PassengerResponseDTO> findAll() {
         return passengerRepository.findAllByIsActiveTrue()
-        .switchIfEmpty(Flux.error(new ResourceNotFoundException("Passenger", "all", null)))
         .map(passengerMapper::toDto);
     }
 

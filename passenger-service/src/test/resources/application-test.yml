@@ -8,7 +8,6 @@ spring:
     password:
   flyway:
     enabled: false
-
 eureka:
   client:
     register-with-eureka: false

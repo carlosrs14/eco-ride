@@ -48,20 +48,22 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public Mono<DriverResponseDTO> findById(@NonNull String id) {
-        UUID uuid = UUID.fromString(id);
-        return driverRepository.findByIdAndIsActiveTrue(uuid)
-        .switchIfEmpty(
-            Mono.error(new ResourceNotFoundException("driver", "id", id))
-        )
-        .map(
-            driverMapper::toDto 
-        );
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> driverRepository.findByIdAndIsActiveTrue(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("driver", "id", id))
+                )
+                .map(
+                    driverMapper::toDto 
+                ));
     }
 
     @Override
     public Mono<DriverResponseDTO> update(@NonNull String id, DriverRequestUpdateDTO driverRequestUpdateDTO) {
-        UUID uuid = UUID.fromString(id);
-        return driverRepository.findByIdAndIsActiveTrue(uuid)
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> driverRepository.findByIdAndIsActiveTrue(uuid)
                 .switchIfEmpty(
                     Mono.error(new ResourceNotFoundException("passenger", "id", id))
                 )
@@ -70,14 +72,15 @@ public class DriverServiceImpl implements DriverService{
                     driver.setId(uuid);
                     driver.setUpdatedAt(Instant.now());
                     return driverRepository.save(driver);
-                }).map(driverMapper::toDto);
-        
+                })
+                .map(driverMapper::toDto));
     }   
 
     @Override
     public Mono<Void> delete(@NonNull String id) {
-        UUID uuid = UUID.fromString(id);
-        return driverRepository.findByIdAndIsActiveTrue(uuid)
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> driverRepository.findByIdAndIsActiveTrue(uuid)
                 .switchIfEmpty(
                     Mono.error(new ResourceNotFoundException("id", id, uuid))
                 )
@@ -85,14 +88,14 @@ public class DriverServiceImpl implements DriverService{
                     driv.setIsActive(false);
                     driv.setUpdatedAt(Instant.now());
                     return driverRepository.save(driv);
-                }).then();
+                })
+                .then());
     }
 
 
     @Override
     public Flux<DriverResponseDTO> findAll() {
         return driverRepository.findAllByIsActiveTrue()
-        .switchIfEmpty(Flux.error(new ResourceNotFoundException("Driver", "all", null)))
         .map(
             driverMapper::toDto
         );
