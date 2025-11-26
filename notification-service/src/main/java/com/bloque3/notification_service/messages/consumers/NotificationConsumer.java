@@ -20,7 +20,7 @@ public class NotificationConsumer {
     @Bean
     public Consumer<NotificationEvent> notificationRequest(){
         return event ->{
-            System.out.println("Recibido");
+            // TODO fix notify
             notificationService.notify("smtp", event.templateCode(), event.to(), event.params());
         };
     }
