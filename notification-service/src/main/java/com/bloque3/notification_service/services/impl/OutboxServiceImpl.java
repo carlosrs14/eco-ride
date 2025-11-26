@@ -33,38 +33,38 @@ public class OutboxServiceImpl implements OutboxService {
             .map(outboxMapper::toDto);
     }
 
+    @SuppressWarnings("null")
     @Override
     public Mono<OutboxResponse> updateStatus(@NonNull String id, String statusId) {
-        UUID uuid = UUID.fromString(id);
-        if (uuid == null) throw new NullPointerException("UUID is null");
-
-        return outboxRepository.findById(uuid)
-            .switchIfEmpty(
-                Mono.error(new ResourceNotFoundException("outbox", "id", id))
-            )
-            .flatMap(outbox -> {
-                outbox.setStatusId(statusId);
-                outbox.setUpdatedAt(Instant.now());
-                return outboxRepository.save(outbox);
-            })
-            .map(outboxMapper::toDto);
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> outboxRepository.findById(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("outbox", "id", id))
+                )
+                .flatMap(outbox -> {
+                    outbox.setStatusId(statusId);
+                    outbox.setUpdatedAt(Instant.now());
+                    return outboxRepository.save(outbox);
+                })
+                .map(outboxMapper::toDto));
     }
 
+    @SuppressWarnings("null")
     @Override
     public Mono<OutboxResponse> incrementRetries(@NonNull String id) {
-        UUID uuid = UUID.fromString(id);
-        if (uuid == null) throw new NullPointerException("UUID is null");
-
-        return outboxRepository.findById(uuid)
-            .switchIfEmpty(
-                Mono.error(new ResourceNotFoundException("outbox", "id", id))
-            )
-            .flatMap(outbox -> {
-                outbox.setRetries(outbox.getRetries() + 1);
-                outbox.setUpdatedAt(Instant.now());
-                return outboxRepository.save(outbox);
-            })
-            .map(outboxMapper::toDto);
+        return Mono.fromCallable(() -> UUID.fromString(id))
+            .onErrorResume(IllegalArgumentException.class, Mono::error)
+            .flatMap(uuid -> outboxRepository.findById(uuid)
+                .switchIfEmpty(
+                    Mono.error(new ResourceNotFoundException("outbox", "id", id))
+                )
+                .flatMap(outbox -> {
+                    outbox.setRetries(outbox.getRetries() + 1);
+                    outbox.setUpdatedAt(Instant.now());
+                    return outboxRepository.save(outbox);
+                })
+                .map(outboxMapper::toDto));
     }
 }
 

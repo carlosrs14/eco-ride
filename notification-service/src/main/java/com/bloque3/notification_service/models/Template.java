@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -13,7 +15,7 @@ import lombok.Data;
 @Data
 @Builder
 @Table("templates")
-public class Template {
+public class Template implements Persistable<UUID> {
     @Id
     private UUID id;
 
@@ -34,4 +36,12 @@ public class Template {
     
     @Column("is_active")
     private Boolean isActive;
+
+    @Transient
+    private boolean isNew;
+
+    @Override
+    public boolean isNew() {
+        return this.isNew || id == null;
+    }
 }

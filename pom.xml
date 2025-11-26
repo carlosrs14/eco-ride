@@ -13,15 +13,18 @@
     <artifactId>eco-ride</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
+    <properties>
+		<h2.version>2.2.224</h2.version>
+	</properties>
 
 
     <modules>
-        <module>notification-service</module>
+        <module>trip-service</module>
+        <module>passenger-service</module>
         <module>payment-service</module>
+        <module>notification-service</module>
         <module>api-gateway</module>
         <module>eureka-server</module>
         <module>car-service</module>
-        <module>trip-service</module>
-        <module>passenger-service</module>
     </modules>
 </project>

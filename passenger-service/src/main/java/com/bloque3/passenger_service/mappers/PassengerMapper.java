@@ -17,5 +17,6 @@ public interface PassengerMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "isActive", ignore = true)
     @Mapping(target = "ratingAvg", ignore = true)
+    @Mapping(target = "keycloakSub", ignore = true)
     Passenger toEntity(PassengerRequestDTO passengerRequestDTO);
 }
