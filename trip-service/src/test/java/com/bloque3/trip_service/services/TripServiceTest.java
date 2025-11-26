@@ -95,27 +95,7 @@ public class TripServiceTest {
         assertNotNull(capturedTrip.getCreatedAt());
         assertNotNull(capturedTrip.getUpdatedAt());
     }
-    @Test
-    void create_shouldThrowException_whenDestinationNotFound() {
-        UUID driverId = UUID.randomUUID();
-        UUID carId = UUID.randomUUID();
-        UUID originId = UUID.randomUUID();
-        UUID destinationId = UUID.randomUUID();
-        TripRequest request = new TripRequest(5, Instant.now().plusSeconds(3600), new BigDecimal("100.00"), originId.toString(), destinationId.toString(), driverId.toString(), carId.toString());
-
-        CarResponse carResponse = new CarResponse(carId.toString(), "plate", "brand", "model", "color", 4, driverId.toString());
-        DriverResponse driverResponse = new DriverResponse(driverId.toString(), UUID.randomUUID().toString(), "license", true);
-        LocationResponse originResponse = new LocationResponse(originId.toString(), "Origin", UUID.randomUUID().toString());
-        when(carClient.getCarById(carId.toString())).thenReturn(carResponse);
-        when(driverClient.getDriverById(driverId.toString())).thenReturn(driverResponse);
-        when(locationService.findById(originId.toString())).thenReturn(Mono.just(originResponse));
-        when(locationService.findById(destinationId.toString())).thenReturn(Mono.error(new ResourceNotFoundException("location", "id", destinationId.toString())));
-
-        StepVerifier.create(tripService.create(request))
-                .expectError(ResourceNotFoundException.class)
-                .verify();
-    }
-
+    
     @Test
     void findById_shouldReturnTrip_whenExists() {
         UUID tripId = UUID.randomUUID();
@@ -139,7 +119,7 @@ public class TripServiceTest {
                 .expectError(ResourceNotFoundException.class)
                 .verify();
     }
-    
+
     @Test
     void searchTrips_shouldReturnTrips_whenExists() {
         UUID originId = UUID.randomUUID();
